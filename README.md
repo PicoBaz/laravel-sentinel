@@ -4,7 +4,7 @@ Advanced monitoring and alerting system for Laravel applications with real-time 
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![PHP](https://img.shields.io/badge/php-%5E8.1-blue)
-![Laravel](https://img.shields.io/badge/laravel-%5E10.0%7C%5E11.0%5E12.0-red)
+![Laravel](https://img.shields.io/badge/laravel-%5E10.0%7C%5E11.0%7C%5E12.0-red)
 
 ## ✨ Features
 
@@ -12,6 +12,7 @@ Advanced monitoring and alerting system for Laravel applications with real-time 
 - 💾 **Memory Monitoring** - Track memory usage and prevent leaks
 - 🚨 **Exception Monitoring** - Catch and categorize exceptions
 - ⚡ **Performance Monitoring** - Monitor response times
+- 🔐 **Security Monitoring** - Track security threats and attacks (NEW v1.1.0)
 - 📊 **Beautiful Dashboard** - Real-time metrics visualization
 - 🔔 **Multi-Channel Alerts** - Slack, Telegram, Discord, Email
 - 🧩 **Modular Architecture** - Easily extend with custom modules
@@ -123,7 +124,87 @@ Access the dashboard at: `http://your-app.test/sentinel`
 
 ```bash
 php artisan sentinel:status
+php artisan sentinel:security-report --hours=24
 ```
+
+## 🔐 Security Monitoring (NEW in v1.1.0)
+
+### Features
+
+The Security Monitor module tracks and prevents security threats:
+
+- ✅ Failed login attempts
+- ✅ SQL Injection attempts
+- ✅ XSS (Cross-Site Scripting) attempts
+- ✅ Path traversal attempts
+- ✅ Command injection attempts
+- ✅ Rate limiting violations
+- ✅ Unauthorized access attempts
+- ✅ File integrity monitoring
+- ✅ IP blacklisting (manual & automatic)
+- ✅ Security scoring system
+
+### Configuration
+
+```env
+SENTINEL_SECURITY_MONITOR=true
+SENTINEL_SECURITY_AUTO_BLOCK=true
+SENTINEL_SECURITY_AUTO_BLOCK_SCORE=20
+SENTINEL_SECURITY_BLACKLIST=192.168.1.100,10.0.0.5
+```
+
+### Middleware
+
+Add security middleware to protect routes:
+
+```php
+Route::middleware(['sentinel.security'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'index']);
+});
+```
+
+### Security Helper
+
+```php
+use PicoBaz\Sentinel\Modules\SecurityMonitor\SecurityHelper;
+
+SecurityHelper::getSecurityScore('192.168.1.1');
+
+SecurityHelper::addToBlacklist('192.168.1.100', 'Multiple failed logins');
+
+SecurityHelper::removeFromBlacklist('192.168.1.100');
+
+SecurityHelper::isIpBlacklisted('192.168.1.100');
+
+SecurityHelper::getThreatLevel(45);
+```
+
+### File Integrity Monitoring
+
+```php
+use PicoBaz\Sentinel\Modules\SecurityMonitor\SecurityMonitorModule;
+
+$monitor = app(SecurityMonitorModule::class);
+$monitor->checkFileIntegrity([
+    base_path('.env'),
+    base_path('composer.json'),
+]);
+```
+
+### Security Report
+
+Generate comprehensive security reports:
+
+```bash
+php artisan sentinel:security-report --hours=24
+```
+
+Output includes:
+- Failed login attempts
+- Suspicious requests by type
+- Rate limiting violations
+- Top threat IPs with security scores
+- Blacklisted IPs
 
 ## 🧩 Creating Custom Modules
 
