@@ -103,7 +103,7 @@ class SecurityMonitorModule
     {
         RateLimiter::for('sentinel-monitor', function ($request) {
             $key = 'sentinel:' . $request->ip();
-
+            
             if (RateLimiter::tooManyAttempts($key, 100)) {
                 Sentinel::log('security', [
                     'type' => 'rate_limit_exceeded',
@@ -123,7 +123,7 @@ class SecurityMonitorModule
     {
         Event::listen('Illuminate\Auth\Events\Attempting', function ($event) {
             $user = $event->user ?? null;
-
+            
             if ($user && !$user->hasPermissionTo($event->guard ?? 'web')) {
                 Sentinel::log('security', [
                     'type' => 'unauthorized_access_attempt',

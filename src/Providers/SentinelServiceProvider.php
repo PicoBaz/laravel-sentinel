@@ -37,6 +37,8 @@ class SentinelServiceProvider extends ServiceProvider
             $this->commands([
                 SentinelInstallCommand::class,
                 SentinelStatusCommand::class,
+                \PicoBaz\Sentinel\Commands\SecurityReportCommand::class,
+                \PicoBaz\Sentinel\Commands\AIInsightsCommand::class,
             ]);
         }
 
@@ -48,6 +50,7 @@ class SentinelServiceProvider extends ServiceProvider
     {
         $router = $this->app['router'];
         $router->aliasMiddleware('sentinel', SentinelMiddleware::class);
+        $router->aliasMiddleware('sentinel.security', \PicoBaz\Sentinel\Modules\SecurityMonitor\SecurityMiddleware::class);
     }
 
     protected function bootModules()

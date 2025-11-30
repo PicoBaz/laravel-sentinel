@@ -2,21 +2,74 @@
 
 All notable changes to `laravel-sentinel` will be documented in this file.
 
+## [1.2.0] - 2024-11-25
+
+### Added
+- 🤖 **AI Insights & Predictions Module** - Machine learning powered application analysis
+  - Pattern recognition and analysis
+    - Peak hours detection
+    - Slow endpoint identification
+    - Memory trend analysis
+    - Error pattern recognition
+  - Anomaly detection using Z-score algorithm
+    - Response time anomalies
+    - Memory usage spikes
+    - Error rate anomalies
+    - Query count anomalies
+  - Predictive analytics with linear regression
+    - Performance trend forecasting (24h & 7-day)
+    - Memory usage predictions
+    - Error rate forecasting
+    - Downtime risk assessment
+  - Smart AI-generated recommendations
+    - Optimization suggestions
+    - Scaling recommendations
+    - Critical issue alerts
+  - System health scoring (0-100)
+  - Automatic hourly analysis via Laravel scheduler
+- 🎯 **AI Insights Command** - `php artisan sentinel:ai-insights`
+- 📊 **AIInsightsHelper** - Programmatic access to AI insights
+- 📈 **Statistical Analysis Engine** - Z-score, linear regression, trend calculation
+
+### Enhanced
+- Dashboard can now display AI insights and predictions
+- Extended notification system to include AI-generated alerts
+- Improved caching strategy for AI computations
+
+### Configuration
+- Added `SENTINEL_AI_INSIGHTS` environment variable
+- Added `SENTINEL_AI_ANALYSIS_FREQUENCY` for scheduling control
+- Added `SENTINEL_AI_PREDICTION_WINDOW` for forecast window
+- Added `SENTINEL_AI_ANOMALY_THRESHOLD` for sensitivity tuning
+- Added `ai_insights` configuration section in `config/sentinel.php`
+
+### Algorithms
+- Z-score anomaly detection (configurable threshold: default 2.5σ)
+- Linear regression for trend prediction
+- Statistical analysis (mean, standard deviation, variance)
+- Pattern matching and frequency analysis
+
+### Commands
+- `php artisan sentinel:ai-insights` - Display AI insights and predictions
+- `php artisan sentinel:ai-insights --refresh` - Force refresh analysis
+
+---
+
 ## [1.1.0] - 2024-11-25
 
 ### Added
 - 🔐 **Security Monitor Module** - Comprehensive security monitoring system
-    - Failed login attempt tracking
-    - SQL Injection detection
-    - XSS (Cross-Site Scripting) detection
-    - Path traversal detection
-    - Command injection detection
-    - Rate limiting violation monitoring
-    - Unauthorized access tracking
-    - File integrity monitoring
-    - IP blacklisting (manual & automatic)
-    - Security scoring system per IP
-    - Threat level classification (Low, Medium, High, Critical)
+  - Failed login attempt tracking
+  - SQL Injection detection
+  - XSS (Cross-Site Scripting) detection
+  - Path traversal detection
+  - Command injection detection
+  - Rate limiting violation monitoring
+  - Unauthorized access tracking
+  - File integrity monitoring
+  - IP blacklisting (manual & automatic)
+  - Security scoring system per IP
+  - Threat level classification (Low, Medium, High, Critical)
 - 🛡️ **Security Middleware** - Protect routes with security checks
 - 📊 **Security Report Command** - Generate detailed security reports (`php artisan sentinel:security-report`)
 - 🔧 **Security Helper Class** - Utilities for security management
@@ -51,10 +104,10 @@ All notable changes to `laravel-sentinel` will be documented in this file.
 - ⚡ **Performance Monitor Module** - Monitor response times
 - 📊 **Dashboard** - Beautiful web-based dashboard
 - 🔔 **Multi-Channel Notifications**
-    - Telegram integration
-    - Slack integration
-    - Discord integration
-    - Email notifications
+  - Telegram integration
+  - Slack integration
+  - Discord integration
+  - Email notifications
 - 🧩 **Modular Architecture** - Easy to extend
 - ⚙️ **Smart Thresholds** - Configurable alert triggers
 - 📈 **Analytics** - Performance metrics and statistics
@@ -84,6 +137,39 @@ We follow [Semantic Versioning](https://semver.org/):
 ---
 
 ## Upgrade Guide
+
+### From 1.1.x to 1.2.0
+
+1. Update your `composer.json`:
+```bash
+composer update picobaz/laravel-sentinel
+```
+
+2. Publish updated config:
+```bash
+php artisan vendor:publish --tag=sentinel-config --force
+```
+
+3. Add AI Insights environment variables to `.env` (optional):
+```env
+SENTINEL_AI_INSIGHTS=true
+SENTINEL_AI_ANALYSIS_FREQUENCY=hourly
+SENTINEL_AI_PREDICTION_WINDOW=24
+SENTINEL_AI_ANOMALY_THRESHOLD=2.5
+```
+
+4. Run AI analysis:
+```bash
+php artisan sentinel:ai-insights --refresh
+```
+
+5. (Optional) Schedule hourly analysis in `app/Console/Kernel.php`:
+```php
+// Analysis runs automatically via module boot
+// No manual scheduling needed
+```
+
+**Note:** AI Insights requires at least 20 data points for accurate predictions. Allow the system to collect data for a few hours before expecting detailed insights.
 
 ### From 1.0.x to 1.1.0
 

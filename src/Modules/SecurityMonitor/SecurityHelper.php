@@ -16,12 +16,12 @@ class SecurityHelper
     public static function addToBlacklist(string $ip, string $reason = '')
     {
         $blacklist = config('sentinel.security.blacklist', []);
-
+        
         if (!in_array($ip, $blacklist)) {
             $blacklist[] = $ip;
-
+            
             Cache::put('sentinel:blacklist', $blacklist, now()->addDays(30));
-
+            
             Sentinel::log('security', [
                 'type' => 'ip_blacklisted',
                 'ip' => $ip,
@@ -40,9 +40,9 @@ class SecurityHelper
     {
         $blacklist = self::getBlacklist();
         $blacklist = array_diff($blacklist, [$ip]);
-
+        
         Cache::put('sentinel:blacklist', $blacklist, now()->addDays(30));
-
+        
         Sentinel::log('security', [
             'type' => 'ip_whitelisted',
             'ip' => $ip,
@@ -60,7 +60,7 @@ class SecurityHelper
         if ($threats <= 3) return 80;
         if ($threats <= 10) return 50;
         if ($threats <= 20) return 20;
-
+        
         return 0;
     }
 
@@ -69,7 +69,7 @@ class SecurityHelper
         if ($score >= 80) return 'low';
         if ($score >= 50) return 'medium';
         if ($score >= 20) return 'high';
-
+        
         return 'critical';
     }
 

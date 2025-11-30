@@ -1,8 +1,8 @@
 {
     "name": "picobaz/laravel-sentinel",
     "description": "Advanced monitoring and alerting system for Laravel applications with real-time notifications",
-    "version": "1.1.0",
-    "keywords": ["laravel", "monitoring", "performance", "alerting", "sentinel", "logging", "security"],
+    "version": "1.2.0",
+    "keywords": ["laravel", "monitoring", "performance", "alerting", "sentinel", "logging", "security", "ai", "machine-learning", "predictions"],
     "type": "library",
     "license": "MIT",
     "authors": [

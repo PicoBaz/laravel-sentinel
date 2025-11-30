@@ -14,7 +14,7 @@ class SecurityReportCommand extends Command
     public function handle()
     {
         $hours = $this->option('hours');
-
+        
         $this->info("Security Report - Last {$hours} hours");
         $this->line('');
 
@@ -37,7 +37,7 @@ class SecurityReportCommand extends Command
 
         $this->line('');
         $this->info('Top Threat IPs:');
-
+        
         $topIps = $securityLogs
             ->groupBy('data.ip')
             ->map(fn($items) => $items->count())
