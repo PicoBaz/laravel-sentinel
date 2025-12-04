@@ -2,6 +2,96 @@
 
 All notable changes to `laravel-sentinel` will be documented in this file.
 
+## [1.3.0] - 2024-12-01
+
+### Added
+- 👥 **Team Collaboration Module** - Complete real-time team management system
+  - Team creation and management
+  - Team member roles (member, lead, admin)
+  - Team responsibilities assignment
+  - On-call scheduling support
+- 📌 **Issue Tracking System**
+  - Auto-assign critical issues to on-call members
+  - Manual issue assignment
+  - Issue status tracking (open, in_progress, resolved, closed)
+  - Priority management (low, medium, high, critical)
+  - Issue resolution tracking with timestamps
+- 💬 **Collaboration Features**
+  - Comment system for issues
+  - Real-time notifications to participants
+  - @mention support (future enhancement)
+- 🔔 **Smart Notification System**
+  - Per-user notification preferences
+  - Severity and type filters
+  - Quiet hours configuration
+  - Multi-channel support (email, Telegram, Slack, database)
+  - Database notifications for in-app display
+- 📧 **Digest Emails**
+  - Daily digest at configurable time
+  - Weekly digest on configurable day
+  - Personalized statistics per user
+  - Team performance metrics
+- 🏆 **Gamification System**
+  - Points system for issue resolution
+  - Badge awards for achievements
+    - First Resolver
+    - Resolver 10, 50, 100
+    - Critical Expert
+    - Speed Demon
+  - Team leaderboards
+  - Global leaderboard
+  - Points-based ranking
+- 📊 **Team Analytics**
+  - Individual user statistics
+  - Team performance metrics
+  - Average resolution time tracking
+  - Issue count by status/priority
+  - Team member ranking
+- 🎯 **Team Management Command**
+  - Create teams via CLI
+  - List all teams
+  - View team members
+  - Display user statistics
+  - Show leaderboards (team & global)
+
+### Enhanced
+- Auto-assignment of critical issues to on-call members
+- Notification system extended for team collaboration
+- Dashboard can display team statistics
+- Extended logging for team activities
+
+### Database
+- 6 new tables for team collaboration
+  - `sentinel_teams`
+  - `sentinel_team_members`
+  - `sentinel_team_responsibilities`
+  - `sentinel_issues`
+  - `sentinel_team_notifications`
+  - `sentinel_issue_comments`
+
+### Configuration
+- Added `SENTINEL_TEAM_COLLABORATION` environment variable
+- Added `SENTINEL_AUTO_ASSIGN_CRITICAL` for auto-assignment
+- Added `SENTINEL_DIGEST_EMAILS` for email digests
+- Added `SENTINEL_GAMIFICATION` for points/badges
+- Added `team_collaboration` configuration section
+
+### Commands
+- `php artisan sentinel:team create` - Create new team
+- `php artisan sentinel:team list` - List all teams
+- `php artisan sentinel:team members --team=X` - List team members
+- `php artisan sentinel:team stats --user=X` - Show user statistics
+- `php artisan sentinel:team leaderboard --team=X --period=week` - Show leaderboard
+
+### API
+- `TeamHelper::assignIssue()` - Assign issue to user
+- `TeamHelper::resolveIssue()` - Mark issue as resolved
+- `TeamHelper::addComment()` - Add comment to issue
+- `TeamHelper::getTeamLeaderboard()` - Get team rankings
+- `TeamHelper::getUserStats()` - Get user statistics
+
+---
+
 ## [1.2.0] - 2024-11-25
 
 ### Added

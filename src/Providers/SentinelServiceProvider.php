@@ -39,6 +39,7 @@ class SentinelServiceProvider extends ServiceProvider
                 SentinelStatusCommand::class,
                 \PicoBaz\Sentinel\Commands\SecurityReportCommand::class,
                 \PicoBaz\Sentinel\Commands\AIInsightsCommand::class,
+                \PicoBaz\Sentinel\Commands\CostOptimizerCommand::class,
             ]);
         }
 

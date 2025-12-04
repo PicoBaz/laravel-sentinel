@@ -13,7 +13,8 @@ Advanced monitoring and alerting system for Laravel applications with real-time 
 - 🚨 **Exception Monitoring** - Catch and categorize exceptions
 - ⚡ **Performance Monitoring** - Monitor response times
 - 🔐 **Security Monitoring** - Track security threats and attacks
-- 🤖 **AI Insights & Predictions** - Machine learning powered analysis (NEW v1.2.0)
+- 🤖 **AI Insights & Predictions** - Machine learning powered analysis (v1.2.0)
+- 💰 **Cost Optimizer** - Infrastructure cost analysis and optimization (NEW v1.3.0)
 - 📊 **Beautiful Dashboard** - Real-time metrics visualization
 - 🔔 **Multi-Channel Alerts** - Slack, Telegram, Discord, Email
 - 🧩 **Modular Architecture** - Easily extend with custom modules
@@ -127,6 +128,7 @@ Access the dashboard at: `http://your-app.test/sentinel`
 php artisan sentinel:status
 php artisan sentinel:security-report --hours=24
 php artisan sentinel:ai-insights --refresh
+php artisan sentinel:cost-optimizer --refresh
 ```
 
 ## 🤖 AI Insights & Predictions (NEW in v1.2.0)
@@ -509,3 +511,329 @@ For detailed documentation, visit [https://github.com/PicoBaz/laravel-sentinel/w
 ## 🐛 Issues
 
 Report issues at [https://github.com/PicoBaz/laravel-sentinel/issues](https://github.com/PicoBaz/laravel-sentinel/issues)
+
+## 💰 Infrastructure Cost Optimizer (NEW in v1.3.0)
+
+### Overview
+
+Optimize your infrastructure costs with AI-powered analysis and actionable recommendations. Track spending, identify waste, and save money while maintaining performance.
+
+**Key Features:**
+- 💻 Multi-Cloud Cost Analysis (AWS, DigitalOcean, Linode)
+- 📊 Complete Cost Breakdown (Compute, Database, Storage, Network, Cache)
+- 💡 Smart Optimization Recommendations
+- 📈 ROI Calculator & Payback Analysis
+- ⚡ Efficiency Scoring (A-F Grade)
+- 💰 Potential Savings Identification
+
+### Quick Start
+
+```bash
+# Analyze infrastructure costs
+php artisan sentinel:cost-optimizer
+
+# Force refresh analysis
+php artisan sentinel:cost-optimizer --refresh
+```
+
+### Sample Output
+
+```
+💰 Cost Overview
+┌─────────────────────┬──────────┐
+│ Metric              │ Value    │
+├─────────────────────┼──────────┤
+│ Monthly Cost        │ $152.50  │
+│ Yearly Cost         │ $1,830.00│
+│ Cost per 1K Requests│ $0.0234  │
+└─────────────────────┴──────────┘
+
+📊 Cost Breakdown
+┌──────────┬──────────────┬───────┬──────────────┐
+│ Category │ Monthly Cost │ Share │ Distribution │
+├──────────┼──────────────┼───────┼──────────────┤
+│ Compute  │ $60.00       │ 39.3% │ ████░░░░░░░░ │
+│ Database │ $45.00       │ 29.5% │ ███░░░░░░░░░ │
+│ Storage  │ $15.00       │ 9.8%  │ █░░░░░░░░░░░ │
+│ Network  │ $30.00       │ 19.7% │ ██░░░░░░░░░░ │
+│ Cache    │ $2.50        │ 1.6%  │ ░░░░░░░░░░░░ │
+└──────────┴──────────────┴───────┴──────────────┘
+
+⚡ Efficiency Score
+Grade: B | Score: 82/100
+Good! Some minor optimizations available.
+
+💡 Optimization Recommendations
+  ⚠️ [high] Database Query Optimization
+    ⚡ Performance Gain: 40-80%
+    → Review queries with: php artisan sentinel:query-report
+
+  📌 [medium] Image Optimization
+    💰 Savings: $12.00/month
+    → Implement WebP format and lazy loading
+
+💵 Total Potential Savings: $12.00/month ($144.00/year)
+```
+
+### Programmatic Usage
+
+```php
+use PicoBaz\Sentinel\Modules\CostOptimizer\CostOptimizerHelper;
+
+// Get total costs
+$monthly = CostOptimizerHelper::getTotalMonthlyCost();
+$yearly = CostOptimizerHelper::getTotalYearlyCost();
+
+// Cost breakdown by category
+$breakdown = CostOptimizerHelper::getCostBreakdown();
+// Returns: ['compute' => 60.00, 'database' => 45.00, ...]
+
+// Get potential savings
+$savings = CostOptimizerHelper::getPotentialSavings();
+
+// Efficiency metrics
+$score = CostOptimizerHelper::getEfficiencyScore();  // 0-100
+$grade = CostOptimizerHelper::getEfficiencyGrade();  // A, B, C, D, F
+
+// Cost per request
+$perRequest = CostOptimizerHelper::getCostPerRequest();
+
+// ROI calculation
+$roi = CostOptimizerHelper::calculateROI(1000);
+// Returns: [
+//   'annual_savings' => 144.00,
+//   'implementation_cost' => 1000,
+//   'payback_months' => 6.9,
+//   'roi_percent' => -85.6,
+//   'break_even_date' => '2025-07-15'
+// ]
+
+// Get all optimizations
+$optimizations = CostOptimizerHelper::getOptimizations();
+foreach ($optimizations as $opt) {
+    echo "{$opt['title']}: Save \${$opt['savings']}/month\n";
+}
+
+// Get complete analysis
+$analysis = CostOptimizerHelper::getCostAnalysis();
+```
+
+### Cost Analysis Features
+
+#### 1. Compute Cost Analysis
+- Server utilization tracking
+- Upsize/downsize recommendations
+- Multi-instance cost aggregation
+- Provider-specific pricing
+
+#### 2. Database Cost Analysis
+- Query performance analysis
+- Missing index detection
+- Cache opportunity identification
+- Optimization suggestions with performance impact
+
+#### 3. Storage Cost Analysis
+- Storage usage tracking
+- Compression recommendations
+- Lifecycle policy suggestions
+- Cost per GB calculation
+
+#### 4. Network/CDN Cost Analysis
+- Bandwidth usage tracking
+- CDN hit rate optimization
+- Image optimization recommendations
+- Potential bandwidth reduction
+
+#### 5. Cache Cost Analysis
+- Cache effectiveness scoring
+- ROI calculation
+- Query caching opportunities
+- Performance gain estimation
+
+### Optimization Categories
+
+**Server Sizing:**
+```
+Utilization < 30% → Downgrade recommendation
+Utilization > 80% → Upgrade recommendation
+Utilization 30-80% → Optimal
+```
+
+**Database Optimizations:**
+- Add missing indexes (0-90% speedup)
+- Fix N+1 queries (40-80% speedup)
+- Implement query caching (30-60% speedup)
+
+**Network Optimizations:**
+- Optimize CDN cache (potential 40% savings)
+- Image format optimization (WebP)
+- Lazy loading implementation
+
+**Storage Optimizations:**
+- Enable compression (30% savings)
+- Lifecycle policies (20% savings)
+
+### Configuration
+
+Add to your `.env`:
+
+```env
+SENTINEL_COST_OPTIMIZER=true
+
+# Provider Configuration
+SENTINEL_COST_PROVIDER=aws
+SENTINEL_COST_INSTANCE_TYPE=t3.small
+SENTINEL_COST_INSTANCE_COUNT=1
+
+# Database
+SENTINEL_COST_DB_PROVIDER=aws
+SENTINEL_COST_DB_TYPE=rds.t3.small
+
+# Storage
+SENTINEL_COST_STORAGE_PROVIDER=aws
+SENTINEL_COST_STORAGE_GB=100
+
+# Network/CDN
+SENTINEL_COST_CDN_PROVIDER=aws
+SENTINEL_COST_BANDWIDTH_GB=500
+SENTINEL_COST_CDN_HIT_RATE=70
+
+# Cache
+SENTINEL_COST_CACHE_PROVIDER=aws
+SENTINEL_COST_CACHE_INSTANCE=cache.t3.micro
+
+# Analysis
+SENTINEL_COST_ANALYSIS_FREQUENCY=daily
+```
+
+### Supported Providers
+
+**AWS:**
+- EC2 instances (t3 family)
+- RDS databases
+- S3 storage
+- CloudFront CDN
+- ElastiCache
+
+**DigitalOcean:**
+- Droplets (Basic plans)
+- Managed Databases
+- Spaces storage
+
+**Linode:**
+- Compute instances
+- All standard plans
+
+### Real-World Examples
+
+#### Example 1: Over-Provisioned Server
+```
+Analysis:
+- Instance: t3.medium ($60/month)
+- Utilization: 25%
+- Recommendation: Downgrade to t3.small
+
+Result:
+💰 Savings: $30/month ($360/year)
+⏱️ Implementation: 1 hour
+Risk: Low
+```
+
+#### Example 2: Database Performance
+```
+Analysis:
+- Slow queries: 145
+- Missing indexes: 12
+- Avg query time: 850ms
+
+Recommendations:
+1. Add indexes (Performance: 70% faster)
+2. Cache frequent queries (Load reduction: 60%)
+
+Result:
+⚡ Performance: 70% improvement
+💰 Cost: $12.50/month (caching)
+📊 ROI: 340%
+```
+
+#### Example 3: CDN Optimization
+```
+Analysis:
+- Bandwidth: 2TB/month
+- CDN Hit Rate: 55%
+- Cost: $170/month
+
+Recommendations:
+- Optimize cache headers
+- Enable WebP images
+- Target hit rate: 85%
+
+Result:
+💰 Savings: $68/month ($816/year)
+📈 Performance: 40% faster load times
+```
+
+### Efficiency Grading
+
+```
+Grade A (90-100): Excellent - Well optimized
+Grade B (80-89):  Good - Minor improvements available
+Grade C (70-79):  Fair - Consider optimizations
+Grade D (60-69):  Poor - Optimization recommended
+Grade F (<60):    Critical - Immediate action needed
+```
+
+### Integration with Other Modules
+
+Cost Optimizer works seamlessly with other Sentinel modules:
+
+- **AI Insights**: Correlates costs with performance predictions
+- **Query Monitor**: Identifies expensive database operations
+- **Performance Monitor**: Links slow endpoints to resource costs
+- **Memory Monitor**: Tracks memory-related cost implications
+
+### API Endpoints
+
+```php
+Route::get('/api/sentinel/costs/overview', function () {
+    return [
+        'monthly' => CostOptimizerHelper::getTotalMonthlyCost(),
+        'breakdown' => CostOptimizerHelper::getCostBreakdown(),
+        'efficiency' => CostOptimizerHelper::getEfficiencyScore(),
+    ];
+});
+
+Route::get('/api/sentinel/costs/savings', function () {
+    return [
+        'potential_monthly' => CostOptimizerHelper::getPotentialSavings(),
+        'potential_yearly' => CostOptimizerHelper::getPotentialSavings() * 12,
+        'optimizations' => CostOptimizerHelper::getOptimizations(),
+    ];
+});
+```
+
+### Best Practices
+
+1. **Run Analysis Regularly**: Daily automated analysis catches cost drift
+2. **Review Recommendations**: Prioritize high-impact, low-risk optimizations
+3. **Track Changes**: Monitor cost trends after implementing optimizations
+4. **Test Before Production**: Validate sizing changes in staging first
+5. **Document Decisions**: Keep track of why certain recommendations were accepted/rejected
+
+### Cost Savings Calculator
+
+The module includes a sophisticated ROI calculator:
+
+```php
+$roi = CostOptimizerHelper::calculateROI($implementationCost = 1000);
+
+// Output:
+[
+    'annual_savings' => 144.00,
+    'implementation_cost' => 1000,
+    'payback_months' => 6.9,
+    'roi_percent' => -85.6,  // Negative first year, positive after
+    'break_even_date' => '2025-07-15'
+]
+```
+
