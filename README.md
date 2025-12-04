@@ -27,16 +27,51 @@ Advanced monitoring and alerting system for Laravel applications with real-time 
 composer require picobaz/laravel-sentinel
 ```
 
-### Publish Configuration
+### Setup
 
 ```bash
+# Install and run migrations
 php artisan sentinel:install
 ```
 
 This will:
 - Publish configuration file to `config/sentinel.php`
 - Publish views to `resources/views/vendor/sentinel`
-- Run migrations
+- Run migrations automatically
+
+### Manual Installation (if needed)
+
+If you prefer manual installation:
+
+```bash
+# Publish config
+php artisan vendor:publish --tag=sentinel-config
+
+# Publish views (optional)
+php artisan vendor:publish --tag=sentinel-views
+
+# Run migrations
+php artisan migrate
+```
+
+### ⚠️ Troubleshooting
+
+If you encounter "Table sentinel_logs doesn't exist" error:
+
+```bash
+# Make sure migrations ran
+php artisan migrate
+
+# If still having issues, check if table exists
+php artisan tinker
+>>> Schema::hasTable('sentinel_logs')
+
+# Clear cache
+php artisan config:clear
+php artisan cache:clear
+```
+
+**Note:** Sentinel is designed to fail gracefully. If tables don't exist, it won't log anything until migrations are run.
 
 ## ⚙️ Configuration
 

@@ -60,11 +60,24 @@ class SentinelServiceProvider extends ServiceProvider
             return;
         }
 
+        // Check if sentinel_logs table exists before booting modules
+        try {
+            if (!\Illuminate\Support\Facades\Schema::hasTable('sentinel_logs')) {
+                return;
+            }
+        } catch (\Exception $e) {
+            return;
+        }
+
         foreach (config('sentinel.modules', []) as $module => $enabled) {
             if ($enabled) {
                 $moduleClass = "PicoBaz\\Sentinel\\Modules\\" . ucfirst($module) . "\\" . ucfirst($module) . "Module";
                 if (class_exists($moduleClass)) {
-                    $this->app->make($moduleClass)->boot();
+                    try {
+                        $this->app->make($moduleClass)->boot();
+                    } catch (\Exception $e) {
+                        // Silently fail if module boot fails
+                    }
                 }
             }
         }

@@ -24,40 +24,87 @@ class SentinelService
 
     public function log(string $type, array $data)
     {
-        $log = SentinelLog::create([
-            'type' => $type,
-            'data' => $data,
-            'severity' => $this->calculateSeverity($type, $data),
-            'created_at' => now(),
-        ]);
+        try {
+            // Check if table exists before attempting to log
+            if (!$this->tableExists('sentinel_logs')) {
+                return null;
+            }
 
-        if ($this->shouldTriggerAlert($type, $data)) {
-            event(new AlertTriggered($log));
+            $log = SentinelLog::create([
+                'type' => $type,
+                'data' => $data,
+                'severity' => $this->calculateSeverity($type, $data),
+                'created_at' => now(),
+            ]);
+
+            if ($this->shouldTriggerAlert($type, $data)) {
+                event(new AlertTriggered($log));
+            }
+
+            return $log;
+        } catch (\Exception $e) {
+            // Silently fail if logging fails (prevents infinite loops)
+            return null;
         }
+    }
 
-        return $log;
+    protected function tableExists(string $table): bool
+    {
+        try {
+            return \Illuminate\Support\Facades\Schema::hasTable($table);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     public function getMetrics(string $type = null, int $hours = 24)
     {
-        $query = SentinelLog::where('created_at', '>=', now()->subHours($hours));
+        try {
+            if (!$this->tableExists('sentinel_logs')) {
+                return collect();
+            }
 
-        if ($type) {
-            $query->where('type', $type);
+            $query = SentinelLog::where('created_at', '>=', now()->subHours($hours));
+
+            if ($type) {
+                $query->where('type', $type);
+            }
+
+            return $query->get();
+        } catch (\Exception $e) {
+            return collect();
         }
-
-        return $query->get();
     }
 
     public function getStatistics()
     {
-        return [
-            'total_logs' => SentinelLog::count(),
-            'today_logs' => SentinelLog::whereDate('created_at', today())->count(),
-            'critical_logs' => SentinelLog::where('severity', 'critical')->count(),
-            'average_response_time' => $this->getAverageResponseTime(),
-            'slow_queries_count' => $this->getSlowQueriesCount(),
-        ];
+        try {
+            if (!$this->tableExists('sentinel_logs')) {
+                return [
+                    'total_logs' => 0,
+                    'today_logs' => 0,
+                    'critical_logs' => 0,
+                    'average_response_time' => 0,
+                    'slow_queries_count' => 0,
+                ];
+            }
+
+            return [
+                'total_logs' => SentinelLog::count(),
+                'today_logs' => SentinelLog::whereDate('created_at', today())->count(),
+                'critical_logs' => SentinelLog::where('severity', 'critical')->count(),
+                'average_response_time' => $this->getAverageResponseTime(),
+                'slow_queries_count' => $this->getSlowQueriesCount(),
+            ];
+        } catch (\Exception $e) {
+            return [
+                'total_logs' => 0,
+                'today_logs' => 0,
+                'critical_logs' => 0,
+                'average_response_time' => 0,
+                'slow_queries_count' => 0,
+            ];
+        }
     }
 
     protected function calculateSeverity(string $type, array $data): string
@@ -94,16 +141,32 @@ class SentinelService
 
     protected function getAverageResponseTime()
     {
-        return SentinelLog::where('type', 'performance')
-            ->where('created_at', '>=', now()->subDay())
-            ->avg('data->response_time') ?? 0;
+        try {
+            if (!$this->tableExists('sentinel_logs')) {
+                return 0;
+            }
+            
+            return SentinelLog::where('type', 'performance')
+                ->where('created_at', '>=', now()->subDay())
+                ->avg('data->response_time') ?? 0;
+        } catch (\Exception $e) {
+            return 0;
+        }
     }
 
     protected function getSlowQueriesCount()
     {
-        return SentinelLog::where('type', 'query')
-            ->where('severity', '!=', 'info')
-            ->where('created_at', '>=', now()->subDay())
-            ->count();
+        try {
+            if (!$this->tableExists('sentinel_logs')) {
+                return 0;
+            }
+            
+            return SentinelLog::where('type', 'query')
+                ->where('severity', '!=', 'info')
+                ->where('created_at', '>=', now()->subDay())
+                ->count();
+        } catch (\Exception $e) {
+            return 0;
+        }
     }
 }

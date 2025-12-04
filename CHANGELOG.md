@@ -1,53 +1,106 @@
 # Changelog
 
 All notable changes to `laravel-sentinel` will be documented in this file.
+## [1.3.1] - 2024-12-04
+### Fix Bug
+- fix **migrations** bug
 
-## [1.3.0] - 2024-12-01
+---
+## [1.3.0] - 2024-12-04
 
 ### Added
-- 👥 **Team Collaboration Module** - Complete real-time team management system
-  - Team creation and management
-  - Team member roles (member, lead, admin)
-  - Team responsibilities assignment
-  - On-call scheduling support
-- 📌 **Issue Tracking System**
-  - Auto-assign critical issues to on-call members
-  - Manual issue assignment
-  - Issue status tracking (open, in_progress, resolved, closed)
-  - Priority management (low, medium, high, critical)
-  - Issue resolution tracking with timestamps
-- 💬 **Collaboration Features**
-  - Comment system for issues
-  - Real-time notifications to participants
-  - @mention support (future enhancement)
-- 🔔 **Smart Notification System**
-  - Per-user notification preferences
-  - Severity and type filters
-  - Quiet hours configuration
-  - Multi-channel support (email, Telegram, Slack, database)
-  - Database notifications for in-app display
-- 📧 **Digest Emails**
-  - Daily digest at configurable time
-  - Weekly digest on configurable day
-  - Personalized statistics per user
-  - Team performance metrics
-- 🏆 **Gamification System**
-  - Points system for issue resolution
-  - Badge awards for achievements
-    - First Resolver
-    - Resolver 10, 50, 100
-    - Critical Expert
-    - Speed Demon
-  - Team leaderboards
-  - Global leaderboard
-  - Points-based ranking
-- 📊 **Team Analytics**
-  - Individual user statistics
-  - Team performance metrics
-  - Average resolution time tracking
-  - Issue count by status/priority
-  - Team member ranking
-- 🎯 **Team Management Command**
+- 💰 **Infrastructure Cost Optimizer Module** - Smart cost analysis and optimization
+  - Multi-cloud cost tracking (AWS, DigitalOcean, Linode)
+  - Real-time cost analysis
+    - Compute costs with utilization tracking
+    - Database costs with performance metrics
+    - Storage costs with usage analytics
+    - Network/CDN costs with hit rate analysis
+    - Cache costs with ROI calculation
+  - Cost breakdown by category
+  - Monthly and yearly projections
+  - Cost per request calculation
+- 💡 **Smart Optimization Engine**
+  - Server sizing recommendations (upgrade/downgrade)
+  - Database query optimization suggestions
+    - Missing index detection
+    - N+1 query identification
+    - Cache opportunity analysis
+  - Storage optimization
+    - Compression recommendations
+    - Lifecycle policy suggestions
+  - Network optimization
+    - CDN hit rate improvement
+    - Image optimization (WebP, lazy loading)
+    - Bandwidth reduction strategies
+  - Cache effectiveness analysis
+- 📊 **Financial Analytics**
+  - Efficiency scoring system (0-100)
+  - Grade system (A-F)
+  - Potential savings calculation
+  - ROI calculator
+  - Payback period analysis
+  - Break-even date estimation
+- 🎯 **CostOptimizerCommand** - CLI tool with rich output
+  - Cost overview with tables
+  - Visual cost breakdown with progress bars
+  - Efficiency scoring display
+  - Prioritized optimization recommendations
+  - ROI scenarios comparison
+- 📈 **CostOptimizerHelper** - Programmatic API
+  - `getTotalMonthlyCost()` - Monthly infrastructure cost
+  - `getTotalYearlyCost()` - Annual cost projection
+  - `getCostBreakdown()` - Category-wise costs
+  - `getPotentialSavings()` - Optimization savings
+  - `getEfficiencyScore()` - Performance score
+  - `getEfficiencyGrade()` - Letter grade (A-F)
+  - `getCostPerRequest()` - Unit economics
+  - `calculateROI()` - Investment analysis
+
+### Enhanced
+- Configuration system with 13 new cost-related settings
+- Provider-specific pricing data
+- Automatic daily cost analysis scheduling
+- Integration with Query Monitor for database cost analysis
+- Integration with Performance Monitor for compute utilization
+
+### Configuration
+- Added `SENTINEL_COST_OPTIMIZER` module toggle
+- Added provider configuration variables
+  - `SENTINEL_COST_PROVIDER`
+  - `SENTINEL_COST_INSTANCE_TYPE`
+  - `SENTINEL_COST_INSTANCE_COUNT`
+  - `SENTINEL_COST_DB_TYPE`
+  - `SENTINEL_COST_STORAGE_GB`
+  - `SENTINEL_COST_BANDWIDTH_GB`
+  - `SENTINEL_COST_CDN_HIT_RATE`
+  - And more...
+- Added `cost_optimizer` configuration section
+
+### Commands
+- `php artisan sentinel:cost-optimizer` - Display cost analysis
+- `php artisan sentinel:cost-optimizer --refresh` - Force refresh analysis
+
+### Algorithms
+- Server utilization calculation from performance metrics
+- Query caching opportunity detection (>5 repeats)
+- Indexing score calculation based on slow queries
+- Efficiency grading formula with weighted factors
+- ROI calculation with implementation cost consideration
+
+### Provider Support
+- **AWS**: EC2, RDS, S3, CloudFront, ElastiCache
+- **DigitalOcean**: Droplets, Databases, Spaces
+- **Linode**: Compute instances (all tiers)
+
+### Documentation
+- Complete Cost Optimizer section in README
+- Real-world optimization examples
+- Configuration guide
+- API reference
+- Best practices guide
+
+---
   - Create teams via CLI
   - List all teams
   - View team members
