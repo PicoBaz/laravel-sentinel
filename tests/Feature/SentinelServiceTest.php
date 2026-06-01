@@ -3,6 +3,7 @@
 namespace PicoBaz\Sentinel\Tests\Feature;
 
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Schema;
 use PicoBaz\Sentinel\Events\AlertTriggered;
 use PicoBaz\Sentinel\Facades\Sentinel;
 use PicoBaz\Sentinel\Models\SentinelLog;
@@ -13,23 +14,23 @@ class SentinelServiceTest extends TestCase
     public function test_log_creates_record_in_database(): void
     {
         $log = Sentinel::log('performance', [
-            'url'           => '/api/test',
+            'url' => '/api/test',
             'response_time' => 500,
-            'memory'        => 45,
+            'memory' => 45,
         ]);
 
         $this->assertNotNull($log);
         $this->assertInstanceOf(SentinelLog::class, $log);
         $this->assertDatabaseHas('sentinel_logs', [
-            'type'     => 'performance',
+            'type' => 'performance',
             'severity' => 'info',
         ]);
     }
 
     public function test_log_returns_null_gracefully_when_exception_occurs(): void
     {
-        \Illuminate\Support\Facades\Schema::drop('sentinel_logs');
-        \Illuminate\Support\Facades\Schema::drop('sentinel_security_blacklist');
+        Schema::drop('sentinel_logs');
+        Schema::drop('sentinel_security_blacklist');
 
         $result = Sentinel::log('performance', ['url' => '/test']);
         $this->assertNull($result);
@@ -41,8 +42,8 @@ class SentinelServiceTest extends TestCase
     {
         $log = Sentinel::log('exception', [
             'message' => 'Something went wrong',
-            'file'    => '/app/Test.php',
-            'line'    => 42,
+            'file' => '/app/Test.php',
+            'line' => 42,
         ]);
 
         $this->assertEquals('critical', $log->severity);
@@ -51,7 +52,7 @@ class SentinelServiceTest extends TestCase
     public function test_slow_query_log_is_marked_as_warning(): void
     {
         $log = Sentinel::log('query', [
-            'sql'  => 'SELECT * FROM users',
+            'sql' => 'SELECT * FROM users',
             'time' => 1500,
         ]);
 
@@ -61,7 +62,7 @@ class SentinelServiceTest extends TestCase
     public function test_very_slow_query_log_is_marked_as_critical(): void
     {
         $log = Sentinel::log('query', [
-            'sql'  => 'SELECT * FROM orders',
+            'sql' => 'SELECT * FROM orders',
             'time' => 4000,
         ]);
 
@@ -72,7 +73,7 @@ class SentinelServiceTest extends TestCase
     {
         $log = Sentinel::log('memory', [
             'usage' => 200,
-            'peak'  => 210,
+            'peak' => 210,
             'limit' => 256,
         ]);
 
@@ -97,7 +98,7 @@ class SentinelServiceTest extends TestCase
         Event::fake([AlertTriggered::class]);
 
         Sentinel::log('performance', [
-            'url'           => '/api/fast',
+            'url' => '/api/fast',
             'response_time' => 100,
         ]);
 
@@ -115,8 +116,8 @@ class SentinelServiceTest extends TestCase
 
     public function test_get_metrics_returns_empty_collection_on_error(): void
     {
-        \Illuminate\Support\Facades\Schema::drop('sentinel_logs');
-        \Illuminate\Support\Facades\Schema::drop('sentinel_security_blacklist');
+        Schema::drop('sentinel_logs');
+        Schema::drop('sentinel_security_blacklist');
 
         $metrics = Sentinel::getMetrics('performance');
         $this->assertCount(0, $metrics);
@@ -137,8 +138,8 @@ class SentinelServiceTest extends TestCase
 
     public function test_get_statistics_returns_zeros_when_table_missing(): void
     {
-        \Illuminate\Support\Facades\Schema::drop('sentinel_logs');
-        \Illuminate\Support\Facades\Schema::drop('sentinel_security_blacklist');
+        Schema::drop('sentinel_logs');
+        Schema::drop('sentinel_security_blacklist');
 
         $stats = Sentinel::getStatistics();
 
@@ -151,7 +152,7 @@ class SentinelServiceTest extends TestCase
     public function test_sentinel_log_data_is_cast_to_array(): void
     {
         $log = Sentinel::log('performance', [
-            'url'           => '/api/cast-test',
+            'url' => '/api/cast-test',
             'response_time' => 300,
         ]);
 

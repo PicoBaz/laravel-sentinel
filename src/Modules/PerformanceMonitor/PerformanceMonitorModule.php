@@ -2,7 +2,6 @@
 
 namespace PicoBaz\Sentinel\Modules\PerformanceMonitor;
 
-use Illuminate\Support\Facades\Event;
 use PicoBaz\Sentinel\Facades\Sentinel;
 
 class PerformanceMonitorModule
@@ -11,7 +10,7 @@ class PerformanceMonitorModule
 
     public function boot()
     {
-        if (!config('sentinel.modules.performanceMonitor')) {
+        if (! config('sentinel.modules.performanceMonitor')) {
             return;
         }
 

@@ -18,7 +18,7 @@ class SentinelDashboardController extends Controller
     public function metrics($type = null)
     {
         $metrics = Sentinel::getMetrics($type, request('hours', 24));
-        
+
         return response()->json($metrics);
     }
 }

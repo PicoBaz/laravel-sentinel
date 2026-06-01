@@ -10,18 +10,19 @@ class SecurityHelper
     public static function isIpBlacklisted(string $ip): bool
     {
         $blacklist = config('sentinel.security.blacklist', []);
+
         return in_array($ip, $blacklist);
     }
 
     public static function addToBlacklist(string $ip, string $reason = '')
     {
         $blacklist = config('sentinel.security.blacklist', []);
-        
-        if (!in_array($ip, $blacklist)) {
+
+        if (! in_array($ip, $blacklist)) {
             $blacklist[] = $ip;
-            
+
             Cache::put('sentinel:blacklist', $blacklist, now()->addDays(30));
-            
+
             Sentinel::log('security', [
                 'type' => 'ip_blacklisted',
                 'ip' => $ip,
@@ -40,9 +41,9 @@ class SecurityHelper
     {
         $blacklist = self::getBlacklist();
         $blacklist = array_diff($blacklist, [$ip]);
-        
+
         Cache::put('sentinel:blacklist', $blacklist, now()->addDays(30));
-        
+
         Sentinel::log('security', [
             'type' => 'ip_whitelisted',
             'ip' => $ip,
@@ -56,20 +57,34 @@ class SecurityHelper
             ->where('data->ip', $ip)
             ->count();
 
-        if ($threats === 0) return 100;
-        if ($threats <= 3) return 80;
-        if ($threats <= 10) return 50;
-        if ($threats <= 20) return 20;
-        
+        if ($threats === 0) {
+            return 100;
+        }
+        if ($threats <= 3) {
+            return 80;
+        }
+        if ($threats <= 10) {
+            return 50;
+        }
+        if ($threats <= 20) {
+            return 20;
+        }
+
         return 0;
     }
 
     public static function getThreatLevel(int $score): string
     {
-        if ($score >= 80) return 'low';
-        if ($score >= 50) return 'medium';
-        if ($score >= 20) return 'high';
-        
+        if ($score >= 80) {
+            return 'low';
+        }
+        if ($score >= 50) {
+            return 'medium';
+        }
+        if ($score >= 20) {
+            return 'high';
+        }
+
         return 'critical';
     }
 
@@ -84,6 +99,7 @@ class SecurityHelper
 
         if ($score <= $autoBlock) {
             self::addToBlacklist($ip, 'Auto-blocked: Low security score');
+
             return true;
         }
 

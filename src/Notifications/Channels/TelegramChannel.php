@@ -11,7 +11,7 @@ class TelegramChannel
         $botToken = config('sentinel.notifications.telegram.bot_token');
         $chatId = config('sentinel.notifications.telegram.chat_id');
 
-        if (!$botToken || !$chatId) {
+        if (! $botToken || ! $chatId) {
             return;
         }
 
@@ -27,7 +27,7 @@ class TelegramChannel
     protected function formatMessage($log)
     {
         $emoji = $this->getSeverityEmoji($log->severity);
-        
+
         return sprintf(
             "%s <b>Sentinel Alert</b>\n\n<b>Type:</b> %s\n<b>Severity:</b> %s\n<b>Time:</b> %s\n\n<code>%s</code>",
             $emoji,
@@ -40,7 +40,7 @@ class TelegramChannel
 
     protected function getSeverityEmoji($severity)
     {
-        return match($severity) {
+        return match ($severity) {
             'critical' => '🚨',
             'warning' => '⚠️',
             default => 'ℹ️',

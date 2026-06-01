@@ -3,6 +3,7 @@
 namespace PicoBaz\Sentinel\Tests;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use PicoBaz\Sentinel\Providers\SentinelServiceProvider;
 
@@ -22,20 +23,17 @@ abstract class TestCase extends OrchestraTestCase
 
         $app['config']->set('database.default', 'sqlite');
         $app['config']->set('database.connections.sqlite', [
-            'driver'   => 'sqlite',
+            'driver' => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => '',
+            'prefix' => '',
         ]);
 
-
         $app['config']->set('cache.default', 'array');
-
 
         $app['config']->set('sentinel.enabled', true);
         $app['config']->set('sentinel.thresholds.query_time', 1000);
         $app['config']->set('sentinel.thresholds.memory_usage', 128);
         $app['config']->set('sentinel.thresholds.response_time', 2000);
-
 
         $app['config']->set('sentinel.modules.queryMonitor', true);
         $app['config']->set('sentinel.modules.memoryMonitor', true);
@@ -73,7 +71,7 @@ abstract class TestCase extends OrchestraTestCase
 
     protected function defineDatabaseMigrations(): void
     {
-        $this->loadMigrationsFrom(__DIR__ . '/../src/Database/Migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../src/Database/Migrations');
     }
 
     protected function seedPerformanceLogs(int $count = 25, int $baseResponseTime = 800): void
@@ -81,19 +79,19 @@ abstract class TestCase extends OrchestraTestCase
         $records = [];
         for ($i = 0; $i < $count; $i++) {
             $records[] = [
-                'type'       => 'performance',
-                'data'       => json_encode([
-                    'url'           => '/api/products',
-                    'method'        => 'GET',
+                'type' => 'performance',
+                'data' => json_encode([
+                    'url' => '/api/products',
+                    'method' => 'GET',
                     'response_time' => $baseResponseTime + ($i * 20),
-                    'memory'        => 45 + $i,
-                    'status_code'   => 200,
+                    'memory' => 45 + $i,
+                    'status_code' => 200,
                 ]),
-                'severity'   => 'info',
+                'severity' => 'info',
                 'created_at' => now()->subMinutes($count - $i)->toDateTimeString(),
             ];
         }
-        \Illuminate\Support\Facades\DB::table('sentinel_logs')->insert($records);
+        DB::table('sentinel_logs')->insert($records);
     }
 
     protected function seedMemoryLogs(int $count = 25, int $baseUsage = 80): void
@@ -101,17 +99,17 @@ abstract class TestCase extends OrchestraTestCase
         $records = [];
         for ($i = 0; $i < $count; $i++) {
             $records[] = [
-                'type'       => 'memory',
-                'data'       => json_encode([
+                'type' => 'memory',
+                'data' => json_encode([
                     'usage' => $baseUsage + $i,
-                    'peak'  => $baseUsage + $i + 10,
+                    'peak' => $baseUsage + $i + 10,
                     'limit' => 128,
                 ]),
-                'severity'   => $baseUsage + $i > 128 ? 'critical' : 'info',
+                'severity' => $baseUsage + $i > 128 ? 'critical' : 'info',
                 'created_at' => now()->subMinutes($count - $i)->toDateTimeString(),
             ];
         }
-        \Illuminate\Support\Facades\DB::table('sentinel_logs')->insert($records);
+        DB::table('sentinel_logs')->insert($records);
     }
 
     protected function seedQueryLogs(int $count = 15): void
@@ -125,17 +123,17 @@ abstract class TestCase extends OrchestraTestCase
         for ($i = 0; $i < $count; $i++) {
             $time = 300 + ($i * 100);
             $records[] = [
-                'type'       => 'query',
-                'data'       => json_encode([
-                    'sql'      => $sqls[$i % count($sqls)],
-                    'time'     => $time,
+                'type' => 'query',
+                'data' => json_encode([
+                    'sql' => $sqls[$i % count($sqls)],
+                    'time' => $time,
                     'bindings' => [],
                 ]),
-                'severity'   => $time > 1000 ? ($time > 3000 ? 'critical' : 'warning') : 'info',
+                'severity' => $time > 1000 ? ($time > 3000 ? 'critical' : 'warning') : 'info',
                 'created_at' => now()->subMinutes($count - $i)->toDateTimeString(),
             ];
         }
-        \Illuminate\Support\Facades\DB::table('sentinel_logs')->insert($records);
+        DB::table('sentinel_logs')->insert($records);
     }
 
     protected function seedExceptionLogs(int $count = 5): void
@@ -148,17 +146,17 @@ abstract class TestCase extends OrchestraTestCase
         $records = [];
         for ($i = 0; $i < $count; $i++) {
             $records[] = [
-                'type'       => 'exception',
-                'data'       => json_encode([
+                'type' => 'exception',
+                'data' => json_encode([
                     'message' => $messages[$i % count($messages)],
-                    'file'    => '/app/Controllers/TestController.php',
-                    'line'    => 100 + $i,
-                    'level'   => 'error',
+                    'file' => '/app/Controllers/TestController.php',
+                    'line' => 100 + $i,
+                    'level' => 'error',
                 ]),
-                'severity'   => 'critical',
+                'severity' => 'critical',
                 'created_at' => now()->subMinutes($count - $i)->toDateTimeString(),
             ];
         }
-        \Illuminate\Support\Facades\DB::table('sentinel_logs')->insert($records);
+        DB::table('sentinel_logs')->insert($records);
     }
 }

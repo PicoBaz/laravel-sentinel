@@ -15,7 +15,7 @@ class CostOptimizerTest extends TestCase
     {
         parent::setUp();
         Cache::flush();
-        $this->module = new CostOptimizerModule();
+        $this->module = new CostOptimizerModule;
     }
 
     // ── analyzeCosts ──────────────────────────────────────────
@@ -155,7 +155,7 @@ class CostOptimizerTest extends TestCase
             $priorityOrder = ['critical' => 4, 'high' => 3, 'medium' => 2, 'low' => 1];
             for ($i = 0; $i < count($optimizations) - 1; $i++) {
                 $current = $priorityOrder[$optimizations[$i]['priority']] ?? 0;
-                $next    = $priorityOrder[$optimizations[$i + 1]['priority']] ?? 0;
+                $next = $priorityOrder[$optimizations[$i + 1]['priority']] ?? 0;
                 $this->assertGreaterThanOrEqual($next, $current);
             }
         }
@@ -168,9 +168,9 @@ class CostOptimizerTest extends TestCase
         $this->module->analyzeCosts();
         $optimizations = $this->module->generateOptimizations();
 
-        $computeOpts = array_filter($optimizations, fn($o) => $o['category'] === 'compute');
+        $computeOpts = array_filter($optimizations, fn ($o) => $o['category'] === 'compute');
 
-        if (!empty($computeOpts)) {
+        if (! empty($computeOpts)) {
             $computeOpt = array_values($computeOpts)[0];
             $this->assertStringContainsStringIgnoringCase('downsize', $computeOpt['title']);
         }
@@ -183,7 +183,7 @@ class CostOptimizerTest extends TestCase
         $this->module->analyzeCosts();
         $optimizations = $this->module->generateOptimizations();
 
-        $storageOpts = array_filter($optimizations, fn($o) => $o['category'] === 'storage');
+        $storageOpts = array_filter($optimizations, fn ($o) => $o['category'] === 'storage');
 
         $this->assertGreaterThanOrEqual(1, count($storageOpts));
     }
@@ -204,7 +204,7 @@ class CostOptimizerTest extends TestCase
         $this->module->analyzeCosts();
 
         $monthly = CostOptimizerHelper::getTotalMonthlyCost();
-        $yearly  = CostOptimizerHelper::getTotalYearlyCost();
+        $yearly = CostOptimizerHelper::getTotalYearlyCost();
 
         $this->assertEqualsWithDelta($monthly * 12, $yearly, 0.01);
     }

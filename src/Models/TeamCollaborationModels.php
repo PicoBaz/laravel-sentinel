@@ -2,7 +2,9 @@
 
 namespace PicoBaz\Sentinel\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use PicoBaz\Sentinel\Modules\TeamCollaboration\IssueTracker;
 
 class Team extends Model
 {
@@ -26,7 +28,7 @@ class Team extends Model
 
     public function issues()
     {
-        return $this->hasMany(\PicoBaz\Sentinel\Modules\TeamCollaboration\IssueTracker::class, 'team_id');
+        return $this->hasMany(IssueTracker::class, 'team_id');
     }
 }
 
@@ -60,7 +62,7 @@ class TeamMember extends Model
 
     public function user()
     {
-        return $this->belongsTo(\App\Models\User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function hasBadge($badge)
@@ -71,8 +73,8 @@ class TeamMember extends Model
     public function awardBadge($badge)
     {
         $badges = $this->badges ?? [];
-        
-        if (!in_array($badge, $badges)) {
+
+        if (! in_array($badge, $badges)) {
             $badges[] = $badge;
             $this->update(['badges' => $badges]);
         }
@@ -114,7 +116,7 @@ class TeamNotification extends Model
 
     public function user()
     {
-        return $this->belongsTo(\App\Models\User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function log()
@@ -124,7 +126,7 @@ class TeamNotification extends Model
 
     public function issue()
     {
-        return $this->belongsTo(\PicoBaz\Sentinel\Modules\TeamCollaboration\IssueTracker::class, 'issue_id');
+        return $this->belongsTo(IssueTracker::class, 'issue_id');
     }
 
     public function markAsRead()
@@ -150,11 +152,11 @@ class IssueComment extends Model
 
     public function issue()
     {
-        return $this->belongsTo(\PicoBaz\Sentinel\Modules\TeamCollaboration\IssueTracker::class, 'issue_id');
+        return $this->belongsTo(IssueTracker::class, 'issue_id');
     }
 
     public function user()
     {
-        return $this->belongsTo(\App\Models\User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

@@ -3,6 +3,7 @@
 namespace PicoBaz\Sentinel\Tests\Unit;
 
 use PicoBaz\Sentinel\Modules\AIInsights\AIInsightsModule;
+use PicoBaz\Sentinel\Modules\SecurityMonitor\SecurityHelper;
 use PicoBaz\Sentinel\Tests\TestCase;
 
 /**
@@ -13,12 +14,13 @@ use PicoBaz\Sentinel\Tests\TestCase;
 class StatisticsCalculationTest extends TestCase
 {
     private AIInsightsModule $module;
+
     private \ReflectionClass $reflection;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->module     = new AIInsightsModule();
+        $this->module = new AIInsightsModule;
         $this->reflection = new \ReflectionClass($this->module);
     }
 
@@ -26,6 +28,7 @@ class StatisticsCalculationTest extends TestCase
     {
         $m = $this->reflection->getMethod($method);
         $m->setAccessible(true);
+
         return $m->invoke($this->module, ...$args);
     }
 
@@ -161,19 +164,19 @@ class StatisticsCalculationTest extends TestCase
 
     public function test_threat_level_low_for_score_above_80(): void
     {
-        $module = new \PicoBaz\Sentinel\Modules\SecurityMonitor\SecurityHelper();
+        $module = new SecurityHelper;
 
-        $this->assertEquals('low', \PicoBaz\Sentinel\Modules\SecurityMonitor\SecurityHelper::getThreatLevel(100));
-        $this->assertEquals('low', \PicoBaz\Sentinel\Modules\SecurityMonitor\SecurityHelper::getThreatLevel(81));
+        $this->assertEquals('low', SecurityHelper::getThreatLevel(100));
+        $this->assertEquals('low', SecurityHelper::getThreatLevel(81));
     }
 
     public function test_threat_level_boundaries(): void
     {
-        $this->assertEquals('medium',   \PicoBaz\Sentinel\Modules\SecurityMonitor\SecurityHelper::getThreatLevel(79));
-        $this->assertEquals('medium',   \PicoBaz\Sentinel\Modules\SecurityMonitor\SecurityHelper::getThreatLevel(50));
-        $this->assertEquals('high',     \PicoBaz\Sentinel\Modules\SecurityMonitor\SecurityHelper::getThreatLevel(49));
-        $this->assertEquals('high',     \PicoBaz\Sentinel\Modules\SecurityMonitor\SecurityHelper::getThreatLevel(20));
-        $this->assertEquals('critical', \PicoBaz\Sentinel\Modules\SecurityMonitor\SecurityHelper::getThreatLevel(19));
-        $this->assertEquals('critical', \PicoBaz\Sentinel\Modules\SecurityMonitor\SecurityHelper::getThreatLevel(0));
+        $this->assertEquals('medium', SecurityHelper::getThreatLevel(79));
+        $this->assertEquals('medium', SecurityHelper::getThreatLevel(50));
+        $this->assertEquals('high', SecurityHelper::getThreatLevel(49));
+        $this->assertEquals('high', SecurityHelper::getThreatLevel(20));
+        $this->assertEquals('critical', SecurityHelper::getThreatLevel(19));
+        $this->assertEquals('critical', SecurityHelper::getThreatLevel(0));
     }
 }

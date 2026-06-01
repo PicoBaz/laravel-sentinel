@@ -2,8 +2,8 @@
 
 namespace PicoBaz\Sentinel\Modules\CostOptimizer;
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use PicoBaz\Sentinel\Facades\Sentinel;
 use PicoBaz\Sentinel\Models\SentinelLog;
 
@@ -38,7 +38,7 @@ class CostOptimizerModule
 
     public function boot()
     {
-        if (!config('sentinel.modules.costOptimizer')) {
+        if (! config('sentinel.modules.costOptimizer')) {
             return;
         }
 
@@ -47,13 +47,13 @@ class CostOptimizerModule
 
     protected function scheduleAnalysis()
     {
-        if (!app()->runningInConsole()) {
+        if (! app()->runningInConsole()) {
             return;
         }
 
         app()->booted(function () {
-            $schedule = app()->make(\Illuminate\Console\Scheduling\Schedule::class);
-            
+            $schedule = app()->make(Schedule::class);
+
             $schedule->call(function () {
                 $this->analyzeCosts();
                 $this->generateOptimizations();
@@ -141,7 +141,7 @@ class CostOptimizerModule
         $indexingScore = 100 - min(100, ($slowQueries / max(1, $totalQueries)) * 100 * 10);
 
         $optimizations = [];
-        
+
         if ($slowQueries > 10) {
             $optimizations[] = [
                 'type' => 'indexing',
@@ -169,7 +169,7 @@ class CostOptimizerModule
                 'description' => 'Implement query result caching',
                 'impact' => 'medium',
                 'potential_speedup' => '30-60%',
-                'cacheable_queries' => $cacheOpportunity . '%',
+                'cacheable_queries' => $cacheOpportunity.'%',
             ];
         }
 
@@ -278,7 +278,7 @@ class CostOptimizerModule
         if (in_array($cacheDriver, ['redis', 'memcached'])) {
             $provider = config('sentinel.cost_optimizer.cache_provider', 'aws');
             $instanceType = config('sentinel.cost_optimizer.cache_instance', 'cache.t3.micro');
-            
+
             $hourlyRate = 0.017;
             $monthlyCost = $hourlyRate * 730;
         }
@@ -291,8 +291,8 @@ class CostOptimizerModule
         $cacheHitRateEstimate = 60;
 
         $performanceGain = [
-            'query_reduction' => count($cacheableQueries) . ' queries',
-            'time_saved' => round(collect($cacheableQueries)->sum('time') * 0.95, 2) . 'ms',
+            'query_reduction' => count($cacheableQueries).' queries',
+            'time_saved' => round(collect($cacheableQueries)->sum('time') * 0.95, 2).'ms',
         ];
 
         return [
@@ -308,7 +308,7 @@ class CostOptimizerModule
     public function generateOptimizations()
     {
         $analysis = Cache::get('sentinel:cost:analysis', []);
-        
+
         $optimizations = [];
 
         if (isset($analysis['compute']['utilization'])) {
@@ -337,7 +337,7 @@ class CostOptimizerModule
             }
         }
 
-        if (isset($analysis['database']['optimizations']) && !empty($analysis['database']['optimizations'])) {
+        if (isset($analysis['database']['optimizations']) && ! empty($analysis['database']['optimizations'])) {
             foreach ($analysis['database']['optimizations'] as $opt) {
                 $optimizations[] = [
                     'category' => 'database',
@@ -380,6 +380,7 @@ class CostOptimizerModule
 
         usort($optimizations, function ($a, $b) {
             $priorityOrder = ['critical' => 4, 'high' => 3, 'medium' => 2, 'low' => 1];
+
             return ($priorityOrder[$b['priority']] ?? 0) - ($priorityOrder[$a['priority']] ?? 0);
         });
 
@@ -417,7 +418,7 @@ class CostOptimizerModule
             ->count();
 
         $requestsPerMonth = $logs * 30;
-        
+
         if ($requestsPerMonth == 0) {
             return 0;
         }
@@ -429,12 +430,12 @@ class CostOptimizerModule
     {
         $types = array_keys($this->providerRates[$provider]);
         $currentIndex = array_search($currentType, $types);
-        
+
         if ($currentIndex > 0) {
             $lowerType = $types[$currentIndex - 1];
             $currentRate = $this->providerRates[$provider][$currentType];
             $lowerRate = $this->providerRates[$provider][$lowerType];
-            
+
             return round(($currentRate - $lowerRate) * 730, 2);
         }
 
@@ -445,12 +446,12 @@ class CostOptimizerModule
     {
         $types = array_keys($this->providerRates[$provider]);
         $currentIndex = array_search($currentType, $types);
-        
+
         if ($currentIndex < count($types) - 1) {
             $higherType = $types[$currentIndex + 1];
             $currentRate = $this->providerRates[$provider][$currentType];
             $higherRate = $this->providerRates[$provider][$higherType];
-            
+
             return round(($higherRate - $currentRate) * 730, 2);
         }
 
@@ -471,7 +472,7 @@ class CostOptimizerModule
     {
         return $queryLogs->groupBy('data.sql')
             ->filter(function ($group) {
-                return $group->count() > 5 && !str_contains(strtolower($group->first()->data['sql'] ?? ''), 'insert');
+                return $group->count() > 5 && ! str_contains(strtolower($group->first()->data['sql'] ?? ''), 'insert');
             })
             ->map(function ($group) {
                 return [
@@ -495,12 +496,12 @@ class CostOptimizerModule
 
         $roi = (($valueOfTimeSaved - $monthlyCost) / $monthlyCost) * 100;
 
-        return round($roi, 2) . '%';
+        return round($roi, 2).'%';
     }
 
     protected function getActionForOptimization($type)
     {
-        return match($type) {
+        return match ($type) {
             'indexing' => 'Run: php artisan sentinel:analyze-indexes',
             'query_optimization' => 'Review queries with: php artisan sentinel:query-report',
             'query_caching' => 'Implement Redis cache for frequent queries',

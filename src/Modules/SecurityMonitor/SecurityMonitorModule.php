@@ -34,7 +34,7 @@ class SecurityMonitorModule
 
     public function boot()
     {
-        if (!config('sentinel.modules.securityMonitor')) {
+        if (! config('sentinel.modules.securityMonitor')) {
             return;
         }
 
@@ -71,6 +71,7 @@ class SecurityMonitorModule
     {
         app()->middleware(function ($request, $next) {
             $this->checkForSuspiciousPatterns($request);
+
             return $next($request);
         });
     }
@@ -102,8 +103,8 @@ class SecurityMonitorModule
     protected function monitorRateLimiting()
     {
         RateLimiter::for('sentinel-monitor', function ($request) {
-            $key = 'sentinel:' . $request->ip();
-            
+            $key = 'sentinel:'.$request->ip();
+
             if (RateLimiter::tooManyAttempts($key, 100)) {
                 Sentinel::log('security', [
                     'type' => 'rate_limit_exceeded',
@@ -123,8 +124,8 @@ class SecurityMonitorModule
     {
         Event::listen('Illuminate\Auth\Events\Attempting', function ($event) {
             $user = $event->user ?? null;
-            
-            if ($user && !$user->hasPermissionTo($event->guard ?? 'web')) {
+
+            if ($user && ! $user->hasPermissionTo($event->guard ?? 'web')) {
                 Sentinel::log('security', [
                     'type' => 'unauthorized_access_attempt',
                     'user_id' => $user->id ?? null,
@@ -141,7 +142,7 @@ class SecurityMonitorModule
     public function checkFileIntegrity(array $files)
     {
         foreach ($files as $file) {
-            if (!file_exists($file)) {
+            if (! file_exists($file)) {
                 continue;
             }
 

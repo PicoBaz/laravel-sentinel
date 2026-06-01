@@ -2,14 +2,13 @@
 
 namespace PicoBaz\Sentinel\Modules\ExceptionMonitor;
 
-use Illuminate\Support\Facades\Event;
 use PicoBaz\Sentinel\Facades\Sentinel;
 
 class ExceptionMonitorModule
 {
     public function boot()
     {
-        if (!config('sentinel.modules.exceptionMonitor')) {
+        if (! config('sentinel.modules.exceptionMonitor')) {
             return;
         }
 

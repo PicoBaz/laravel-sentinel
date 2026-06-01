@@ -2,6 +2,7 @@
 
 namespace PicoBaz\Sentinel\Modules\AIInsights;
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Cache;
 use PicoBaz\Sentinel\Facades\Sentinel;
 use PicoBaz\Sentinel\Models\SentinelLog;
@@ -9,11 +10,12 @@ use PicoBaz\Sentinel\Models\SentinelLog;
 class AIInsightsModule
 {
     protected $predictionWindow = 24;
+
     protected $anomalyThreshold = 2.5;
 
     public function boot()
     {
-        if (!config('sentinel.modules.aiInsights')) {
+        if (! config('sentinel.modules.aiInsights')) {
             return;
         }
 
@@ -22,13 +24,13 @@ class AIInsightsModule
 
     protected function scheduleAnalysis()
     {
-        if (!app()->runningInConsole()) {
+        if (! app()->runningInConsole()) {
             return;
         }
 
         app()->booted(function () {
-            $schedule = app()->make(\Illuminate\Console\Scheduling\Schedule::class);
-            
+            $schedule = app()->make(Schedule::class);
+
             $schedule->call(function () {
                 $this->analyzePatterns();
                 $this->detectAnomalies();
@@ -376,9 +378,13 @@ class AIInsightsModule
         $riskScore += min($performanceIssues * 2, 30);
 
         $riskLevel = 'low';
-        if ($riskScore > 70) $riskLevel = 'critical';
-        elseif ($riskScore > 50) $riskLevel = 'high';
-        elseif ($riskScore > 30) $riskLevel = 'medium';
+        if ($riskScore > 70) {
+            $riskLevel = 'critical';
+        } elseif ($riskScore > 50) {
+            $riskLevel = 'high';
+        } elseif ($riskScore > 30) {
+            $riskLevel = 'medium';
+        }
 
         return [
             'score' => round($riskScore, 2),
@@ -399,13 +405,13 @@ class AIInsightsModule
 
         $recommendations = [];
 
-        if (isset($patterns['slow_endpoints']) && !empty($patterns['slow_endpoints'])) {
+        if (isset($patterns['slow_endpoints']) && ! empty($patterns['slow_endpoints'])) {
             $recommendations[] = [
                 'type' => 'performance',
                 'priority' => 'high',
                 'title' => 'Optimize Slow Endpoints',
                 'description' => 'Multiple endpoints showing high response times',
-                'action' => 'Review and optimize the following endpoints: ' . implode(', ', array_keys(array_slice($patterns['slow_endpoints'], 0, 3))),
+                'action' => 'Review and optimize the following endpoints: '.implode(', ', array_keys(array_slice($patterns['slow_endpoints'], 0, 3))),
             ];
         }
 
@@ -429,19 +435,19 @@ class AIInsightsModule
             ];
         }
 
-        if (isset($patterns['peak_hours']['hours']) && !empty($patterns['peak_hours']['hours'])) {
+        if (isset($patterns['peak_hours']['hours']) && ! empty($patterns['peak_hours']['hours'])) {
             $recommendations[] = [
                 'type' => 'scaling',
                 'priority' => 'medium',
                 'title' => 'Scale During Peak Hours',
                 'description' => 'Consistent high load detected during specific hours',
-                'action' => 'Consider auto-scaling during peak hours: ' . implode(', ', $patterns['peak_hours']['hours']) . ':00',
+                'action' => 'Consider auto-scaling during peak hours: '.implode(', ', $patterns['peak_hours']['hours']).':00',
             ];
         }
 
         Cache::put('sentinel:ai:recommendations', $recommendations, now()->addHours(6));
 
-        if (!empty($recommendations)) {
+        if (! empty($recommendations)) {
             Sentinel::log('ai_insight', [
                 'type' => 'recommendations_generated',
                 'count' => count($recommendations),
@@ -460,11 +466,11 @@ class AIInsightsModule
         }
 
         $mean = array_sum($values) / count($values);
-        
+
         $variance = array_sum(array_map(function ($x) use ($mean) {
             return pow($x - $mean, 2);
         }, $values)) / count($values);
-        
+
         $stdDev = sqrt($variance);
 
         return [
@@ -478,7 +484,9 @@ class AIInsightsModule
     protected function calculateTrend(array $values)
     {
         $n = count($values);
-        if ($n < 2) return 0;
+        if ($n < 2) {
+            return 0;
+        }
 
         $x = range(1, $n);
         $y = $values;
@@ -499,26 +507,42 @@ class AIInsightsModule
 
     protected function calculateFrequency($group)
     {
-        if ($group->count() < 2) return 'rare';
+        if ($group->count() < 2) {
+            return 'rare';
+        }
 
         $firstSeen = $group->min('created_at');
         $lastSeen = $group->max('created_at');
         $hoursDiff = $lastSeen->diffInHours($firstSeen);
 
-        if ($hoursDiff == 0) return 'multiple';
+        if ($hoursDiff == 0) {
+            return 'multiple';
+        }
 
         $rate = $group->count() / $hoursDiff;
 
-        if ($rate > 1) return 'frequent';
-        if ($rate > 0.1) return 'moderate';
+        if ($rate > 1) {
+            return 'frequent';
+        }
+        if ($rate > 0.1) {
+            return 'moderate';
+        }
+
         return 'rare';
     }
 
     protected function calculateConfidence($sampleSize)
     {
-        if ($sampleSize < 10) return 'low';
-        if ($sampleSize < 50) return 'medium';
-        if ($sampleSize < 100) return 'high';
+        if ($sampleSize < 10) {
+            return 'low';
+        }
+        if ($sampleSize < 50) {
+            return 'medium';
+        }
+        if ($sampleSize < 100) {
+            return 'high';
+        }
+
         return 'very_high';
     }
 }

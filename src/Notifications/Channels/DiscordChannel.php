@@ -10,7 +10,7 @@ class DiscordChannel
     {
         $webhookUrl = config('sentinel.notifications.discord.webhook_url');
 
-        if (!$webhookUrl) {
+        if (! $webhookUrl) {
             return;
         }
 
@@ -32,7 +32,7 @@ class DiscordChannel
                         ],
                         [
                             'name' => 'Data',
-                            'value' => "```json\n" . json_encode($log->data, JSON_PRETTY_PRINT) . "\n```",
+                            'value' => "```json\n".json_encode($log->data, JSON_PRETTY_PRINT)."\n```",
                         ],
                     ],
                     'timestamp' => $log->created_at->toIso8601String(),
@@ -46,7 +46,7 @@ class DiscordChannel
 
     protected function getSeverityColor($severity)
     {
-        return match($severity) {
+        return match ($severity) {
             'critical' => 15158332,
             'warning' => 16776960,
             default => 3447003,

@@ -2,18 +2,23 @@
 
 namespace PicoBaz\Sentinel\Providers;
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use PicoBaz\Sentinel\Commands\AIInsightsCommand;
+use PicoBaz\Sentinel\Commands\CostOptimizerCommand;
+use PicoBaz\Sentinel\Commands\SecurityReportCommand;
 use PicoBaz\Sentinel\Commands\SentinelInstallCommand;
 use PicoBaz\Sentinel\Commands\SentinelStatusCommand;
-use PicoBaz\Sentinel\Services\SentinelService;
 use PicoBaz\Sentinel\Http\Middleware\SentinelMiddleware;
+use PicoBaz\Sentinel\Modules\SecurityMonitor\SecurityMiddleware;
+use PicoBaz\Sentinel\Services\SentinelService;
 
 class SentinelServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../Config/sentinel.php', 'sentinel');
-        
+        $this->mergeConfigFrom(__DIR__.'/../Config/sentinel.php', 'sentinel');
+
         $this->app->singleton('sentinel', function ($app) {
             return new SentinelService($app);
         });
@@ -22,24 +27,24 @@ class SentinelServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../Config/sentinel.php' => config_path('sentinel.php'),
+            __DIR__.'/../Config/sentinel.php' => config_path('sentinel.php'),
         ], 'sentinel-config');
 
         $this->publishes([
-            __DIR__ . '/../Views' => resource_path('views/vendor/sentinel'),
+            __DIR__.'/../Views' => resource_path('views/vendor/sentinel'),
         ], 'sentinel-views');
 
-        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
-        $this->loadViewsFrom(__DIR__ . '/../Views', 'sentinel');
-        $this->loadRoutesFrom(__DIR__ . '/../routes.php');
+        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+        $this->loadViewsFrom(__DIR__.'/../Views', 'sentinel');
+        $this->loadRoutesFrom(__DIR__.'/../routes.php');
 
         if ($this->app->runningInConsole()) {
             $this->commands([
                 SentinelInstallCommand::class,
                 SentinelStatusCommand::class,
-                \PicoBaz\Sentinel\Commands\SecurityReportCommand::class,
-                \PicoBaz\Sentinel\Commands\AIInsightsCommand::class,
-                \PicoBaz\Sentinel\Commands\CostOptimizerCommand::class,
+                SecurityReportCommand::class,
+                AIInsightsCommand::class,
+                CostOptimizerCommand::class,
             ]);
         }
 
@@ -51,18 +56,18 @@ class SentinelServiceProvider extends ServiceProvider
     {
         $router = $this->app['router'];
         $router->aliasMiddleware('sentinel', SentinelMiddleware::class);
-        $router->aliasMiddleware('sentinel.security', \PicoBaz\Sentinel\Modules\SecurityMonitor\SecurityMiddleware::class);
+        $router->aliasMiddleware('sentinel.security', SecurityMiddleware::class);
     }
 
     protected function bootModules()
     {
-        if (!config('sentinel.enabled', true)) {
+        if (! config('sentinel.enabled', true)) {
             return;
         }
 
         // Check if sentinel_logs table exists before booting modules
         try {
-            if (!\Illuminate\Support\Facades\Schema::hasTable('sentinel_logs')) {
+            if (! Schema::hasTable('sentinel_logs')) {
                 return;
             }
         } catch (\Exception $e) {
@@ -71,7 +76,7 @@ class SentinelServiceProvider extends ServiceProvider
 
         foreach (config('sentinel.modules', []) as $module => $enabled) {
             if ($enabled) {
-                $moduleClass = "PicoBaz\\Sentinel\\Modules\\" . ucfirst($module) . "\\" . ucfirst($module) . "Module";
+                $moduleClass = 'PicoBaz\\Sentinel\\Modules\\'.ucfirst($module).'\\'.ucfirst($module).'Module';
                 if (class_exists($moduleClass)) {
                     try {
                         $this->app->make($moduleClass)->boot();

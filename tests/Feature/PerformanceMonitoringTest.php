@@ -2,7 +2,6 @@
 
 namespace PicoBaz\Sentinel\Tests\Feature;
 
-use Illuminate\Support\Facades\DB;
 use PicoBaz\Sentinel\Facades\Sentinel;
 use PicoBaz\Sentinel\Models\SentinelLog;
 use PicoBaz\Sentinel\Tests\TestCase;
@@ -14,11 +13,11 @@ class PerformanceMonitoringTest extends TestCase
     public function test_performance_log_is_stored_correctly(): void
     {
         $log = Sentinel::log('performance', [
-            'url'           => '/api/products',
-            'method'        => 'GET',
+            'url' => '/api/products',
+            'method' => 'GET',
             'response_time' => 850,
-            'memory'        => 45,
-            'status_code'   => 200,
+            'memory' => 45,
+            'status_code' => 200,
         ]);
 
         $this->assertDatabaseHas('sentinel_logs', ['type' => 'performance']);
@@ -39,8 +38,8 @@ class PerformanceMonitoringTest extends TestCase
     public function test_slow_query_is_logged_as_warning(): void
     {
         $log = Sentinel::log('query', [
-            'sql'      => 'SELECT * FROM orders',
-            'time'     => 1200,
+            'sql' => 'SELECT * FROM orders',
+            'time' => 1200,
             'bindings' => [],
         ]);
 
@@ -51,7 +50,7 @@ class PerformanceMonitoringTest extends TestCase
     public function test_very_slow_query_is_logged_as_critical(): void
     {
         $log = Sentinel::log('query', [
-            'sql'  => 'SELECT * FROM products',
+            'sql' => 'SELECT * FROM products',
             'time' => 5000,
         ]);
 
@@ -61,7 +60,7 @@ class PerformanceMonitoringTest extends TestCase
     public function test_normal_query_is_logged_as_info(): void
     {
         $log = Sentinel::log('query', [
-            'sql'  => 'SELECT id FROM users LIMIT 1',
+            'sql' => 'SELECT id FROM users LIMIT 1',
             'time' => 50,
         ]);
 
@@ -72,8 +71,8 @@ class PerformanceMonitoringTest extends TestCase
     {
         $sql = 'SELECT * FROM products WHERE id = ?';
         Sentinel::log('query', [
-            'sql'      => $sql,
-            'time'     => 200,
+            'sql' => $sql,
+            'time' => 200,
             'bindings' => [42],
         ]);
 
@@ -89,7 +88,7 @@ class PerformanceMonitoringTest extends TestCase
         // threshold is 128MB, 1.5x = 192
         $log = Sentinel::log('memory', [
             'usage' => 200,
-            'peak'  => 210,
+            'peak' => 210,
             'limit' => 256,
         ]);
 
@@ -100,7 +99,7 @@ class PerformanceMonitoringTest extends TestCase
     {
         $log = Sentinel::log('memory', [
             'usage' => 150,
-            'peak'  => 160,
+            'peak' => 160,
             'limit' => 256,
         ]);
 
@@ -111,7 +110,7 @@ class PerformanceMonitoringTest extends TestCase
     {
         $log = Sentinel::log('memory', [
             'usage' => 64,
-            'peak'  => 70,
+            'peak' => 70,
             'limit' => 128,
         ]);
 
@@ -124,9 +123,9 @@ class PerformanceMonitoringTest extends TestCase
     {
         $log = Sentinel::log('exception', [
             'message' => 'Undefined variable',
-            'file'    => '/app/Controllers/HomeController.php',
-            'line'    => 55,
-            'level'   => 'error',
+            'file' => '/app/Controllers/HomeController.php',
+            'line' => 55,
+            'level' => 'error',
         ]);
 
         $this->assertEquals('critical', $log->severity);
@@ -169,9 +168,9 @@ class PerformanceMonitoringTest extends TestCase
     public function test_log_data_json_column_is_correctly_decoded(): void
     {
         $data = [
-            'url'           => '/api/integrity-test',
+            'url' => '/api/integrity-test',
             'response_time' => 500,
-            'nested'        => ['key' => 'value'],
+            'nested' => ['key' => 'value'],
         ];
 
         Sentinel::log('performance', $data);

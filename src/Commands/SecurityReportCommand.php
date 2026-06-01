@@ -9,12 +9,13 @@ use PicoBaz\Sentinel\Modules\SecurityMonitor\SecurityHelper;
 class SecurityReportCommand extends Command
 {
     protected $signature = 'sentinel:security-report {--hours=24}';
+
     protected $description = 'Generate security report for specified time period';
 
     public function handle()
     {
         $hours = $this->option('hours');
-        
+
         $this->info("Security Report - Last {$hours} hours");
         $this->line('');
 
@@ -37,10 +38,10 @@ class SecurityReportCommand extends Command
 
         $this->line('');
         $this->info('Top Threat IPs:');
-        
+
         $topIps = $securityLogs
             ->groupBy('data.ip')
-            ->map(fn($items) => $items->count())
+            ->map(fn ($items) => $items->count())
             ->sortDesc()
             ->take(10);
 
@@ -56,10 +57,10 @@ class SecurityReportCommand extends Command
         $blacklist = SecurityHelper::getBlacklist();
         if (count($blacklist) > 0) {
             $this->line('');
-            $this->warn('Blacklisted IPs: ' . implode(', ', $blacklist));
+            $this->warn('Blacklisted IPs: '.implode(', ', $blacklist));
         }
 
         $this->line('');
-        $this->info('Total Security Events: ' . $securityLogs->count());
+        $this->info('Total Security Events: '.$securityLogs->count());
     }
 }

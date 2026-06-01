@@ -11,22 +11,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Package Source Code
-      uses: actions/checkout@v4
+      - name: Checkout Package Source Code
+        uses: actions/checkout@v4
 
-    - name: Setup PHP Environment
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.3'
-        extensions: mbstring, xml, ctype, iconv, sqlite, pdo_sqlite
-        coverage: none
+      - name: Setup PHP Environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, xml, ctype, iconv, sqlite, pdo_sqlite
+          coverage: none
 
-    - name: Check Composer Json Validity
-      run: composer validate --strict
+      - name: Check Composer Json Validity
+        run: composer validate --strict
 
-    - name: Install Dependencies for Laravel 13
-      run: |
-        composer update --prefer-dist --no-interaction --no-progress --ignore-platform-reqs
+      - name: Install Dependencies for Laravel 13
+        run: |
+          composer update --prefer-dist --no-interaction --no-progress --ignore-platform-reqs
 
-    - name: Run Sentinel Test Suite
-      run: vendor/bin/phpunit
+      - name: Execute Code Style Check (Laravel Pint)
+        run: vendor/bin/pint --test
+
+      - name: Run Sentinel Test Suite
+        run: vendor/bin/phpunit

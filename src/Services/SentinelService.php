@@ -2,13 +2,14 @@
 
 namespace PicoBaz\Sentinel\Services;
 
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use PicoBaz\Sentinel\Events\AlertTriggered;
 use PicoBaz\Sentinel\Models\SentinelLog;
 
 class SentinelService
 {
     protected $app;
+
     protected $modules = [];
 
     public function __construct($app)
@@ -19,6 +20,7 @@ class SentinelService
     public function registerModule(string $name, $module)
     {
         $this->modules[$name] = $module;
+
         return $this;
     }
 
@@ -26,7 +28,7 @@ class SentinelService
     {
         try {
             // Check if table exists before attempting to log
-            if (!$this->tableExists('sentinel_logs')) {
+            if (! $this->tableExists('sentinel_logs')) {
                 return null;
             }
 
@@ -51,16 +53,16 @@ class SentinelService
     protected function tableExists(string $table): bool
     {
         try {
-            return \Illuminate\Support\Facades\Schema::hasTable($table);
+            return Schema::hasTable($table);
         } catch (\Exception $e) {
             return false;
         }
     }
 
-    public function getMetrics(string $type = null, int $hours = 24)
+    public function getMetrics(?string $type = null, int $hours = 24)
     {
         try {
-            if (!$this->tableExists('sentinel_logs')) {
+            if (! $this->tableExists('sentinel_logs')) {
                 return collect();
             }
 
@@ -79,7 +81,7 @@ class SentinelService
     public function getStatistics()
     {
         try {
-            if (!$this->tableExists('sentinel_logs')) {
+            if (! $this->tableExists('sentinel_logs')) {
                 return [
                     'total_logs' => 0,
                     'today_logs' => 0,
@@ -142,10 +144,10 @@ class SentinelService
     protected function getAverageResponseTime()
     {
         try {
-            if (!$this->tableExists('sentinel_logs')) {
+            if (! $this->tableExists('sentinel_logs')) {
                 return 0;
             }
-            
+
             return SentinelLog::where('type', 'performance')
                 ->where('created_at', '>=', now()->subDay())
                 ->avg('data->response_time') ?? 0;
@@ -157,10 +159,10 @@ class SentinelService
     protected function getSlowQueriesCount()
     {
         try {
-            if (!$this->tableExists('sentinel_logs')) {
+            if (! $this->tableExists('sentinel_logs')) {
                 return 0;
             }
-            
+
             return SentinelLog::where('type', 'query')
                 ->where('severity', '!=', 'info')
                 ->where('created_at', '>=', now()->subDay())

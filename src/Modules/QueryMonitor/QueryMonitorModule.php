@@ -3,14 +3,13 @@
 namespace PicoBaz\Sentinel\Modules\QueryMonitor;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Event;
 use PicoBaz\Sentinel\Facades\Sentinel;
 
 class QueryMonitorModule
 {
     public function boot()
     {
-        if (!config('sentinel.modules.queryMonitor')) {
+        if (! config('sentinel.modules.queryMonitor')) {
             return;
         }
 
