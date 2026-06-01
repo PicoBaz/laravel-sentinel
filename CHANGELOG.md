@@ -1,12 +1,12 @@
 # Changelog
 
 All notable changes to `laravel-sentinel` will be documented in this file.
-## [1.3.1] - 2024-12-04
+## [1.3.1] - 2025-12-04
 ### Fix Bug
 - fix **migrations** bug
 
 ---
-## [1.3.0] - 2024-12-04
+## [1.3.0] - 2025-12-04
 
 ### Added
 - 💰 **Infrastructure Cost Optimizer Module** - Smart cost analysis and optimization
@@ -145,7 +145,7 @@ All notable changes to `laravel-sentinel` will be documented in this file.
 
 ---
 
-## [1.2.0] - 2024-11-25
+## [1.2.0] - 2025-11-25
 
 ### Added
 - 🤖 **AI Insights & Predictions Module** - Machine learning powered application analysis
@@ -198,7 +198,7 @@ All notable changes to `laravel-sentinel` will be documented in this file.
 
 ---
 
-## [1.1.0] - 2024-11-25
+## [1.1.0] - 2025-11-25
 
 ### Added
 - 🔐 **Security Monitor Module** - Comprehensive security monitoring system
@@ -238,7 +238,7 @@ All notable changes to `laravel-sentinel` will be documented in this file.
 
 ---
 
-## [1.0.0] - 2024-11-24
+## [1.0.0] - 2025-11-24
 
 ### Added
 - 🔍 **Query Monitor Module** - Track slow database queries
