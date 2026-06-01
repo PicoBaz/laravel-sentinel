@@ -3,8 +3,8 @@
 Advanced monitoring and alerting system for Laravel applications with real-time notifications across multiple channels.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![PHP](https://img.shields.io/badge/php-%5E8.1-blue)
-![Laravel](https://img.shields.io/badge/laravel-%5E10.0%7C%5E11.0%7C%5E12.0%7C%5E13.0-red)
+![PHP](https://img.shields.io/badge/php-%5E8.3-blue)
+![Laravel](https://img.shields.io/badge/laravel-%5E11.0%7C%5E12.0%7C%5E13.0-red)
 
 ## ✨ Features
 
