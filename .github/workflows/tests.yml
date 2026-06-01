@@ -1,0 +1,32 @@
+name: Run Standalone Automated Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  laravel-sentinel-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Package Source Code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP Environment
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+        extensions: mbstring, xml, ctype, iconv, sqlite, pdo_sqlite
+        coverage: none
+
+    - name: Check Composer Json Validity
+      run: composer validate --strict
+
+    - name: Install Dependencies for Laravel 13
+      run: |
+        composer update --prefer-dist --no-interaction --no-progress --ignore-platform-reqs
+
+    - name: Run Sentinel Test Suite
+      run: vendor/bin/phpunit

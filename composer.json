@@ -1,7 +1,6 @@
 {
     "name": "picobaz/laravel-sentinel",
     "description": "Advanced monitoring and alerting system for Laravel applications with real-time notifications",
-    "version": "2.0.0",
     "keywords": [
         "laravel",
         "monitoring",
