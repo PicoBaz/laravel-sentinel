@@ -3,6 +3,7 @@
 namespace PicoBaz\Sentinel\Tests\Feature;
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use PicoBaz\Sentinel\Modules\AIInsights\AIInsightsHelper;
 use PicoBaz\Sentinel\Modules\AIInsights\AIInsightsModule;
 use PicoBaz\Sentinel\Tests\TestCase;
@@ -14,7 +15,7 @@ class AIInsightsTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->module = new AIInsightsModule();
+        $this->module = new AIInsightsModule;
     }
 
     // ── Pattern Analysis ──────────────────────────────────────
@@ -124,25 +125,23 @@ class AIInsightsTest extends TestCase
 
         $this->seedPerformanceLogs(20, 200);
 
-        \Illuminate\Support\Facades\DB::table('sentinel_logs')->insert([
-            'type'       => 'performance',
-            'data'       => json_encode([
-                'url'           => '/api/spike',
+        DB::table('sentinel_logs')->insert([
+            'type' => 'performance',
+            'data' => json_encode([
+                'url' => '/api/spike',
                 'response_time' => 99999,
-                'memory'        => 50,
+                'memory' => 50,
             ]),
-            'severity'   => 'critical',
+            'severity' => 'critical',
             'created_at' => now()->subMinutes(1)->toDateTimeString(),
         ]);
 
         $anomalies = $this->module->detectAnomalies();
 
-
         if ($anomalies['response_time'] !== null) {
             $this->assertTrue($anomalies['response_time']['detected']);
             $this->assertGreaterThan(0, $anomalies['response_time']['count']);
         }
-
 
         $this->assertIsArray($anomalies);
     }
@@ -266,8 +265,6 @@ class AIInsightsTest extends TestCase
             $this->assertContains($rec['priority'], ['low', 'medium', 'high', 'critical']);
         }
     }
-
-
 
     public function test_helper_get_health_score_returns_value_between_0_and_100(): void
     {

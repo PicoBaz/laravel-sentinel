@@ -2,6 +2,7 @@
 
 namespace PicoBaz\Sentinel\Tests\Feature;
 
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\Cache;
 use PicoBaz\Sentinel\Models\SecurityBlacklist;
 use PicoBaz\Sentinel\Modules\SecurityMonitor\SecurityHelper;
@@ -38,45 +39,45 @@ class SecurityMonitorTest extends TestCase
     public function test_security_blacklist_model_create_stores_record(): void
     {
         SecurityBlacklist::create([
-            'ip'             => '10.10.10.10',
-            'reason'         => 'SQL Injection attempt',
-            'threat_count'   => 3,
+            'ip' => '10.10.10.10',
+            'reason' => 'SQL Injection attempt',
+            'threat_count' => 3,
             'security_score' => 70,
-            'threat_level'   => 'medium',
-            'auto_blocked'   => false,
-            'blocked_at'     => now(),
+            'threat_level' => 'medium',
+            'auto_blocked' => false,
+            'blocked_at' => now(),
             'last_threat_at' => now(),
         ]);
 
         $this->assertDatabaseHas('sentinel_security_blacklist', [
-            'ip'     => '10.10.10.10',
+            'ip' => '10.10.10.10',
             'reason' => 'SQL Injection attempt',
         ]);
     }
 
     public function test_security_blacklist_ip_is_unique(): void
     {
-        $this->expectException(\Illuminate\Database\UniqueConstraintViolationException::class);
+        $this->expectException(UniqueConstraintViolationException::class);
 
         SecurityBlacklist::create([
-            'ip'             => '1.2.3.4',
-            'reason'         => 'First block',
-            'threat_count'   => 1,
+            'ip' => '1.2.3.4',
+            'reason' => 'First block',
+            'threat_count' => 1,
             'security_score' => 90,
-            'threat_level'   => 'low',
-            'auto_blocked'   => false,
-            'blocked_at'     => now(),
+            'threat_level' => 'low',
+            'auto_blocked' => false,
+            'blocked_at' => now(),
             'last_threat_at' => now(),
         ]);
 
         SecurityBlacklist::create([
-            'ip'             => '1.2.3.4',
-            'reason'         => 'Duplicate',
-            'threat_count'   => 1,
+            'ip' => '1.2.3.4',
+            'reason' => 'Duplicate',
+            'threat_count' => 1,
             'security_score' => 90,
-            'threat_level'   => 'low',
-            'auto_blocked'   => false,
-            'blocked_at'     => now(),
+            'threat_level' => 'low',
+            'auto_blocked' => false,
+            'blocked_at' => now(),
             'last_threat_at' => now(),
         ]);
     }
@@ -84,13 +85,13 @@ class SecurityMonitorTest extends TestCase
     public function test_increment_threat_reduces_security_score(): void
     {
         $record = SecurityBlacklist::create([
-            'ip'             => '5.5.5.5',
-            'reason'         => 'Test',
-            'threat_count'   => 0,
+            'ip' => '5.5.5.5',
+            'reason' => 'Test',
+            'threat_count' => 0,
             'security_score' => 100,
-            'threat_level'   => 'low',
-            'auto_blocked'   => false,
-            'blocked_at'     => now(),
+            'threat_level' => 'low',
+            'auto_blocked' => false,
+            'blocked_at' => now(),
             'last_threat_at' => now(),
         ]);
 
@@ -104,13 +105,13 @@ class SecurityMonitorTest extends TestCase
     public function test_increment_threat_updates_threat_level_to_critical(): void
     {
         $record = SecurityBlacklist::create([
-            'ip'             => '6.6.6.6',
-            'reason'         => 'Test',
-            'threat_count'   => 0,
+            'ip' => '6.6.6.6',
+            'reason' => 'Test',
+            'threat_count' => 0,
             'security_score' => 15,
-            'threat_level'   => 'high',
-            'auto_blocked'   => false,
-            'blocked_at'     => now(),
+            'threat_level' => 'high',
+            'auto_blocked' => false,
+            'blocked_at' => now(),
             'last_threat_at' => now(),
         ]);
 
@@ -123,24 +124,24 @@ class SecurityMonitorTest extends TestCase
     public function test_scope_auto_blocked_filters_correctly(): void
     {
         SecurityBlacklist::create([
-            'ip'             => '7.7.7.7',
-            'reason'         => 'Auto',
-            'threat_count'   => 5,
+            'ip' => '7.7.7.7',
+            'reason' => 'Auto',
+            'threat_count' => 5,
             'security_score' => 50,
-            'threat_level'   => 'medium',
-            'auto_blocked'   => true,
-            'blocked_at'     => now(),
+            'threat_level' => 'medium',
+            'auto_blocked' => true,
+            'blocked_at' => now(),
             'last_threat_at' => now(),
         ]);
 
         SecurityBlacklist::create([
-            'ip'             => '8.8.8.8',
-            'reason'         => 'Manual',
-            'threat_count'   => 1,
+            'ip' => '8.8.8.8',
+            'reason' => 'Manual',
+            'threat_count' => 1,
             'security_score' => 90,
-            'threat_level'   => 'low',
-            'auto_blocked'   => false,
-            'blocked_at'     => now(),
+            'threat_level' => 'low',
+            'auto_blocked' => false,
+            'blocked_at' => now(),
             'last_threat_at' => now(),
         ]);
 
@@ -153,24 +154,24 @@ class SecurityMonitorTest extends TestCase
     public function test_scope_critical_filters_by_threat_level(): void
     {
         SecurityBlacklist::create([
-            'ip'             => '9.9.9.9',
-            'reason'         => 'Critical IP',
-            'threat_count'   => 25,
+            'ip' => '9.9.9.9',
+            'reason' => 'Critical IP',
+            'threat_count' => 25,
             'security_score' => 0,
-            'threat_level'   => 'critical',
-            'auto_blocked'   => true,
-            'blocked_at'     => now(),
+            'threat_level' => 'critical',
+            'auto_blocked' => true,
+            'blocked_at' => now(),
             'last_threat_at' => now(),
         ]);
 
         SecurityBlacklist::create([
-            'ip'             => '9.9.9.8',
-            'reason'         => 'Low IP',
-            'threat_count'   => 1,
+            'ip' => '9.9.9.8',
+            'reason' => 'Low IP',
+            'threat_count' => 1,
             'security_score' => 90,
-            'threat_level'   => 'low',
-            'auto_blocked'   => false,
-            'blocked_at'     => now(),
+            'threat_level' => 'low',
+            'auto_blocked' => false,
+            'blocked_at' => now(),
             'last_threat_at' => now(),
         ]);
 
@@ -222,7 +223,7 @@ class SecurityMonitorTest extends TestCase
         SecurityHelper::addToBlacklist('99.99.99.99', 'Duplicate test');
 
         $cached = SecurityHelper::getBlacklist();
-        $this->assertCount(1, array_filter($cached, fn($ip) => $ip === '99.99.99.99'));
+        $this->assertCount(1, array_filter($cached, fn ($ip) => $ip === '99.99.99.99'));
     }
 
     public function test_remove_from_blacklist_removes_ip_from_cache(): void

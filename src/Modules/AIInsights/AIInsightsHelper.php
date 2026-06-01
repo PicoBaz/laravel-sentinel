@@ -40,12 +40,14 @@ class AIInsightsHelper
     public static function hasActiveAnomalies()
     {
         $anomalies = self::getAnomalies();
+
         return collect($anomalies)->filter()->isNotEmpty();
     }
 
     public static function hasCriticalRecommendations()
     {
         $recommendations = self::getRecommendations();
+
         return collect($recommendations)->where('priority', 'critical')->isNotEmpty();
     }
 
@@ -53,7 +55,7 @@ class AIInsightsHelper
     {
         $predictions = self::getPredictions();
         $anomalies = self::getAnomalies();
-        
+
         $score = 100;
 
         if (isset($predictions['downtime_risk']['score'])) {
@@ -70,10 +72,19 @@ class AIInsightsHelper
     {
         $score = self::getHealthScore();
 
-        if ($score >= 80) return 'excellent';
-        if ($score >= 60) return 'good';
-        if ($score >= 40) return 'fair';
-        if ($score >= 20) return 'poor';
+        if ($score >= 80) {
+            return 'excellent';
+        }
+        if ($score >= 60) {
+            return 'good';
+        }
+        if ($score >= 40) {
+            return 'fair';
+        }
+        if ($score >= 20) {
+            return 'poor';
+        }
+
         return 'critical';
     }
 }

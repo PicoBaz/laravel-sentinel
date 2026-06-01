@@ -2,11 +2,11 @@
 
 namespace PicoBaz\Sentinel\Listeners;
 
-use PicoBaz\Sentinel\Events\AlertTriggered;
-use PicoBaz\Sentinel\Notifications\Channels\TelegramChannel;
-use PicoBaz\Sentinel\Notifications\Channels\SlackChannel;
-use PicoBaz\Sentinel\Notifications\Channels\DiscordChannel;
 use Illuminate\Support\Facades\Mail;
+use PicoBaz\Sentinel\Events\AlertTriggered;
+use PicoBaz\Sentinel\Notifications\Channels\DiscordChannel;
+use PicoBaz\Sentinel\Notifications\Channels\SlackChannel;
+use PicoBaz\Sentinel\Notifications\Channels\TelegramChannel;
 
 class SendAlertNotifications
 {
@@ -15,15 +15,15 @@ class SendAlertNotifications
         $channels = config('sentinel.notifications.channels');
 
         if ($channels['telegram']) {
-            (new TelegramChannel())->send($event->log);
+            (new TelegramChannel)->send($event->log);
         }
 
         if ($channels['slack']) {
-            (new SlackChannel())->send($event->log);
+            (new SlackChannel)->send($event->log);
         }
 
         if ($channels['discord']) {
-            (new DiscordChannel())->send($event->log);
+            (new DiscordChannel)->send($event->log);
         }
 
         if ($channels['email']) {
@@ -34,7 +34,7 @@ class SendAlertNotifications
     protected function sendEmail($log)
     {
         $recipients = config('sentinel.notifications.email.recipients');
-        
+
         foreach ($recipients as $recipient) {
             Mail::raw($this->formatMessage($log), function ($message) use ($recipient, $log) {
                 $message->to($recipient)

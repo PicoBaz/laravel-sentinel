@@ -17,8 +17,8 @@ class SentinelMiddleware
         $executionTime = (microtime(true) - $startTime) * 1000;
         $memoryUsed = (memory_get_usage() - $startMemory) / 1024 / 1024;
 
-        $response->headers->set('X-Sentinel-Time', round($executionTime, 2) . 'ms');
-        $response->headers->set('X-Sentinel-Memory', round($memoryUsed, 2) . 'MB');
+        $response->headers->set('X-Sentinel-Time', round($executionTime, 2).'ms');
+        $response->headers->set('X-Sentinel-Memory', round($memoryUsed, 2).'MB');
 
         return $response;
     }

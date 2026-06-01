@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 class SentinelInstallCommand extends Command
 {
     protected $signature = 'sentinel:install';
+
     protected $description = 'Install Laravel Sentinel package';
 
     public function handle()

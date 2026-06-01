@@ -10,7 +10,7 @@ class SlackChannel
     {
         $webhookUrl = config('sentinel.notifications.slack.webhook_url');
 
-        if (!$webhookUrl) {
+        if (! $webhookUrl) {
             return;
         }
 
@@ -32,7 +32,7 @@ class SlackChannel
                         ],
                         [
                             'title' => 'Data',
-                            'value' => "```" . json_encode($log->data, JSON_PRETTY_PRINT) . "```",
+                            'value' => '```'.json_encode($log->data, JSON_PRETTY_PRINT).'```',
                         ],
                     ],
                     'footer' => 'Laravel Sentinel',
@@ -44,7 +44,7 @@ class SlackChannel
 
     protected function getSeverityColor($severity)
     {
-        return match($severity) {
+        return match ($severity) {
             'critical' => 'danger',
             'warning' => 'warning',
             default => 'good',

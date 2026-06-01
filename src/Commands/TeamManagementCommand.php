@@ -3,9 +3,10 @@
 namespace PicoBaz\Sentinel\Commands;
 
 use Illuminate\Console\Command;
-use PicoBaz\Sentinel\Modules\TeamCollaboration\TeamHelper;
+use Illuminate\Support\Str;
 use PicoBaz\Sentinel\Models\Team;
 use PicoBaz\Sentinel\Models\TeamMember;
+use PicoBaz\Sentinel\Modules\TeamCollaboration\TeamHelper;
 
 class TeamManagementCommand extends Command
 {
@@ -14,14 +15,14 @@ class TeamManagementCommand extends Command
                             {--team= : Team ID or slug}
                             {--user= : User ID}
                             {--period=all : Period for stats (all, week, month)}';
-    
+
     protected $description = 'Manage Sentinel teams and view statistics';
 
     public function handle()
     {
         $action = $this->argument('action');
 
-        return match($action) {
+        return match ($action) {
             'create' => $this->createTeam(),
             'list' => $this->listTeams(),
             'members' => $this->listMembers(),
@@ -35,7 +36,7 @@ class TeamManagementCommand extends Command
     {
         $name = $this->ask('Team name:');
         $description = $this->ask('Team description (optional):');
-        $slug = \Illuminate\Support\Str::slug($name);
+        $slug = Str::slug($name);
 
         $team = Team::create([
             'name' => $name,
@@ -56,6 +57,7 @@ class TeamManagementCommand extends Command
 
         if ($teams->isEmpty()) {
             $this->warn('No teams found.');
+
             return 0;
         }
 
@@ -80,17 +82,19 @@ class TeamManagementCommand extends Command
     {
         $teamOption = $this->option('team');
 
-        if (!$teamOption) {
+        if (! $teamOption) {
             $this->error('Please specify --team option');
+
             return 1;
         }
 
-        $team = is_numeric($teamOption) 
+        $team = is_numeric($teamOption)
             ? Team::find($teamOption)
             : Team::where('slug', $teamOption)->first();
 
-        if (!$team) {
+        if (! $team) {
             $this->error('Team not found');
+
             return 1;
         }
 
@@ -98,6 +102,7 @@ class TeamManagementCommand extends Command
 
         if ($members->isEmpty()) {
             $this->warn("No members in team '{$team->name}'");
+
             return 0;
         }
 
@@ -128,8 +133,9 @@ class TeamManagementCommand extends Command
     {
         $userId = $this->option('user');
 
-        if (!$userId) {
+        if (! $userId) {
             $this->error('Please specify --user option');
+
             return 1;
         }
 
@@ -145,17 +151,17 @@ class TeamManagementCommand extends Command
                 ['Total Assigned', $stats['total_assigned']],
                 ['Open Issues', $stats['open_issues']],
                 ['In Progress', $stats['in_progress']],
-                ['Avg Resolution Time', $stats['average_resolution_time'] . ' min'],
+                ['Avg Resolution Time', $stats['average_resolution_time'].' min'],
                 ['Points', $stats['points']],
                 ['Badges', count($stats['badges'])],
             ]
         );
 
-        if (!empty($stats['badges'])) {
+        if (! empty($stats['badges'])) {
             $this->line('');
             $this->info('🏆 Badges:');
             foreach ($stats['badges'] as $badge) {
-                $this->line("  • " . $this->formatBadgeName($badge));
+                $this->line('  • '.$this->formatBadgeName($badge));
             }
         }
 
@@ -168,12 +174,13 @@ class TeamManagementCommand extends Command
         $period = $this->option('period');
 
         if ($teamOption) {
-            $team = is_numeric($teamOption) 
+            $team = is_numeric($teamOption)
                 ? Team::find($teamOption)
                 : Team::where('slug', $teamOption)->first();
 
-            if (!$team) {
+            if (! $team) {
                 $this->error('Team not found');
+
                 return 1;
             }
 
@@ -181,7 +188,7 @@ class TeamManagementCommand extends Command
             $title = "Team '{$team->name}' Leaderboard";
         } else {
             $leaderboard = TeamHelper::getGlobalLeaderboard();
-            $title = "Global Leaderboard";
+            $title = 'Global Leaderboard';
             $period = 'all';
         }
 
@@ -190,12 +197,13 @@ class TeamManagementCommand extends Command
 
         if ($leaderboard->isEmpty()) {
             $this->warn('No data available');
+
             return 0;
         }
 
         $data = $leaderboard->map(function ($entry, $index) {
             $rank = $index + 1;
-            $medal = match($rank) {
+            $medal = match ($rank) {
                 1 => '🥇',
                 2 => '🥈',
                 3 => '🥉',

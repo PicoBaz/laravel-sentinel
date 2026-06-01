@@ -12,7 +12,9 @@ use PicoBaz\Sentinel\Tests\TestCase;
 class NotificationChannelsTest extends TestCase
 {
     private SentinelLog $criticalLog;
+
     private SentinelLog $warningLog;
+
     private SentinelLog $infoLog;
 
     protected function setUp(): void
@@ -20,23 +22,23 @@ class NotificationChannelsTest extends TestCase
         parent::setUp();
 
         $this->criticalLog = SentinelLog::create([
-            'type'       => 'exception',
-            'data'       => ['message' => 'Critical error occurred', 'file' => '/app/Test.php', 'line' => 1],
-            'severity'   => 'critical',
+            'type' => 'exception',
+            'data' => ['message' => 'Critical error occurred', 'file' => '/app/Test.php', 'line' => 1],
+            'severity' => 'critical',
             'created_at' => now(),
         ]);
 
         $this->warningLog = SentinelLog::create([
-            'type'       => 'query',
-            'data'       => ['sql' => 'SELECT *', 'time' => 1500],
-            'severity'   => 'warning',
+            'type' => 'query',
+            'data' => ['sql' => 'SELECT *', 'time' => 1500],
+            'severity' => 'warning',
             'created_at' => now(),
         ]);
 
         $this->infoLog = SentinelLog::create([
-            'type'       => 'performance',
-            'data'       => ['url' => '/api/test', 'response_time' => 200],
-            'severity'   => 'info',
+            'type' => 'performance',
+            'data' => ['url' => '/api/test', 'response_time' => 200],
+            'severity' => 'info',
             'created_at' => now(),
         ]);
     }
@@ -50,9 +52,9 @@ class NotificationChannelsTest extends TestCase
         ]);
 
         config(['sentinel.notifications.telegram.bot_token' => 'fake-bot-token']);
-        config(['sentinel.notifications.telegram.chat_id'   => '123456789']);
+        config(['sentinel.notifications.telegram.chat_id' => '123456789']);
 
-        $channel = new TelegramChannel();
+        $channel = new TelegramChannel;
         $channel->send($this->criticalLog);
 
         Http::assertSent(function ($request) {
@@ -69,9 +71,9 @@ class NotificationChannelsTest extends TestCase
         Http::fake();
 
         config(['sentinel.notifications.telegram.bot_token' => null]);
-        config(['sentinel.notifications.telegram.chat_id'   => '123456789']);
+        config(['sentinel.notifications.telegram.chat_id' => '123456789']);
 
-        $channel = new TelegramChannel();
+        $channel = new TelegramChannel;
         $channel->send($this->criticalLog);
 
         Http::assertNothingSent();
@@ -82,9 +84,9 @@ class NotificationChannelsTest extends TestCase
         Http::fake();
 
         config(['sentinel.notifications.telegram.bot_token' => 'fake-token']);
-        config(['sentinel.notifications.telegram.chat_id'   => null]);
+        config(['sentinel.notifications.telegram.chat_id' => null]);
 
-        $channel = new TelegramChannel();
+        $channel = new TelegramChannel;
         $channel->send($this->criticalLog);
 
         Http::assertNothingSent();
@@ -95,9 +97,9 @@ class NotificationChannelsTest extends TestCase
         Http::fake(['api.telegram.org/*' => Http::response(['ok' => true])]);
 
         config(['sentinel.notifications.telegram.bot_token' => 'tok']);
-        config(['sentinel.notifications.telegram.chat_id'   => '1']);
+        config(['sentinel.notifications.telegram.chat_id' => '1']);
 
-        $channel = new TelegramChannel();
+        $channel = new TelegramChannel;
         $channel->send($this->criticalLog);
 
         Http::assertSent(function ($request) {
@@ -110,9 +112,9 @@ class NotificationChannelsTest extends TestCase
         Http::fake(['api.telegram.org/*' => Http::response(['ok' => true])]);
 
         config(['sentinel.notifications.telegram.bot_token' => 'tok']);
-        config(['sentinel.notifications.telegram.chat_id'   => '1']);
+        config(['sentinel.notifications.telegram.chat_id' => '1']);
 
-        $channel = new TelegramChannel();
+        $channel = new TelegramChannel;
         $channel->send($this->warningLog);
 
         Http::assertSent(function ($request) {
@@ -130,7 +132,7 @@ class NotificationChannelsTest extends TestCase
 
         config(['sentinel.notifications.slack.webhook_url' => 'https://hooks.slack.com/fake']);
 
-        $channel = new SlackChannel();
+        $channel = new SlackChannel;
         $channel->send($this->criticalLog);
 
         Http::assertSent(function ($request) {
@@ -146,7 +148,7 @@ class NotificationChannelsTest extends TestCase
 
         config(['sentinel.notifications.slack.webhook_url' => null]);
 
-        $channel = new SlackChannel();
+        $channel = new SlackChannel;
         $channel->send($this->criticalLog);
 
         Http::assertNothingSent();
@@ -158,7 +160,7 @@ class NotificationChannelsTest extends TestCase
 
         config(['sentinel.notifications.slack.webhook_url' => 'https://hooks.slack.com/fake']);
 
-        $channel = new SlackChannel();
+        $channel = new SlackChannel;
         $channel->send($this->warningLog);
 
         Http::assertSent(function ($request) {
@@ -172,7 +174,7 @@ class NotificationChannelsTest extends TestCase
 
         config(['sentinel.notifications.slack.webhook_url' => 'https://hooks.slack.com/fake']);
 
-        $channel = new SlackChannel();
+        $channel = new SlackChannel;
         $channel->send($this->infoLog);
 
         Http::assertSent(function ($request) {
@@ -186,7 +188,7 @@ class NotificationChannelsTest extends TestCase
 
         config(['sentinel.notifications.slack.webhook_url' => 'https://hooks.slack.com/fake']);
 
-        $channel = new SlackChannel();
+        $channel = new SlackChannel;
         $channel->send($this->criticalLog);
 
         Http::assertSent(function ($request) {
@@ -204,7 +206,7 @@ class NotificationChannelsTest extends TestCase
 
         config(['sentinel.notifications.discord.webhook_url' => 'https://discord.com/api/webhooks/fake']);
 
-        $channel = new DiscordChannel();
+        $channel = new DiscordChannel;
         $channel->send($this->criticalLog);
 
         Http::assertSent(function ($request) {
@@ -220,7 +222,7 @@ class NotificationChannelsTest extends TestCase
 
         config(['sentinel.notifications.discord.webhook_url' => null]);
 
-        $channel = new DiscordChannel();
+        $channel = new DiscordChannel;
         $channel->send($this->criticalLog);
 
         Http::assertNothingSent();
@@ -232,7 +234,7 @@ class NotificationChannelsTest extends TestCase
 
         config(['sentinel.notifications.discord.webhook_url' => 'https://discord.com/api/webhooks/fake']);
 
-        $channel = new DiscordChannel();
+        $channel = new DiscordChannel;
         $channel->send($this->warningLog);
 
         Http::assertSent(function ($request) {
@@ -246,7 +248,7 @@ class NotificationChannelsTest extends TestCase
 
         config(['sentinel.notifications.discord.webhook_url' => 'https://discord.com/api/webhooks/fake']);
 
-        $channel = new DiscordChannel();
+        $channel = new DiscordChannel;
         $channel->send($this->infoLog);
 
         Http::assertSent(function ($request) {
@@ -260,7 +262,7 @@ class NotificationChannelsTest extends TestCase
 
         config(['sentinel.notifications.discord.webhook_url' => 'https://discord.com/api/webhooks/fake']);
 
-        $channel = new DiscordChannel();
+        $channel = new DiscordChannel;
         $channel->send($this->criticalLog);
 
         Http::assertSent(function ($request) {

@@ -8,7 +8,7 @@ class MemoryMonitorModule
 {
     public function boot()
     {
-        if (!config('sentinel.modules.memoryMonitor')) {
+        if (! config('sentinel.modules.memoryMonitor')) {
             return;
         }
 

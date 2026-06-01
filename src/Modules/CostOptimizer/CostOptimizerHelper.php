@@ -19,6 +19,7 @@ class CostOptimizerHelper
     public static function getTotalMonthlyCost()
     {
         $analysis = self::getCostAnalysis();
+
         return $analysis['total_monthly'] ?? 0;
     }
 
@@ -30,13 +31,14 @@ class CostOptimizerHelper
     public static function getPotentialSavings()
     {
         $optimizations = self::getOptimizations();
+
         return array_sum(array_column($optimizations, 'savings'));
     }
 
     public static function getCostBreakdown()
     {
         $analysis = self::getCostAnalysis();
-        
+
         return [
             'compute' => $analysis['compute']['monthly_cost'] ?? 0,
             'database' => $analysis['database']['monthly_cost'] ?? 0,
@@ -49,6 +51,7 @@ class CostOptimizerHelper
     public static function getCostPerRequest()
     {
         $analysis = self::getCostAnalysis();
+
         return $analysis['cost_per_request'] ?? 0;
     }
 
@@ -61,8 +64,11 @@ class CostOptimizerHelper
 
         if (isset($analysis['compute']['utilization'])) {
             $util = $analysis['compute']['utilization'];
-            if ($util < 30) $score -= 20;
-            elseif ($util > 80) $score -= 15;
+            if ($util < 30) {
+                $score -= 20;
+            } elseif ($util > 80) {
+                $score -= 15;
+            }
         }
 
         if (isset($analysis['database']['indexing_score'])) {
@@ -79,17 +85,26 @@ class CostOptimizerHelper
     {
         $score = self::getEfficiencyScore();
 
-        if ($score >= 90) return 'A';
-        if ($score >= 80) return 'B';
-        if ($score >= 70) return 'C';
-        if ($score >= 60) return 'D';
+        if ($score >= 90) {
+            return 'A';
+        }
+        if ($score >= 80) {
+            return 'B';
+        }
+        if ($score >= 70) {
+            return 'C';
+        }
+        if ($score >= 60) {
+            return 'D';
+        }
+
         return 'F';
     }
 
     public static function calculateROI($implementationCost = 1000)
     {
         $annualSavings = self::getPotentialSavings() * 12;
-        
+
         if ($implementationCost == 0) {
             return 'Infinite';
         }
