@@ -1,6 +1,21 @@
 # Changelog
 
 All notable changes to `laravel-sentinel` will be documented in this file.
+
+## [2.0.0] - 2026-06-01
+
+### Added
+- Comprehensive automated test suite with 100% standalone coverage.
+- Deep isolation testing for `AIInsightsModule` using HTTP fakes/mocks.
+- Multi-channel notification mocking (Telegram, Slack, Discord, Email).
+- Local SQLite in-memory database configuration for execution performance testing.
+- Added `.gitattributes` to exclude tests and development assets from production installs (zero-overhead for end users).
+
+### Changed
+- **Breaking Change:** Upgraded framework support to **Laravel 13.x**.
+- **Breaking Change:** Minimum required PHP version is now **>= 8.3**.
+- Upgraded dev-dependencies including `orchestra/testbench (^10.0)` and `phpunit/phpunit (^11.0)`.
+
 ## [1.3.1] - 2025-12-04
 ### Fix Bug
 - fix **migrations** bug
