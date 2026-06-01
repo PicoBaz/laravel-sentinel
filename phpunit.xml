@@ -1,17 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.0/phpunit.xsd"
          bootstrap="vendor/autoload.php"
          colors="true"
+         stopOnFailure="false"
 >
     <testsuites>
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
         </testsuite>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
     </testsuites>
-    <coverage processUncoveredFiles="true">
+
+    <coverage>
         <include>
-            <directory suffix=".php">./src</directory>
+            <directory>src</directory>
         </include>
     </coverage>
+
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="APP_KEY" value="base64:2fl+Ktvkfl+Ktvkfl+Ktvkfl+Ktvkfl+Ktvkfl+I="/>
+        <env name="DB_CONNECTION" value="sqlite"/>
+        <env name="DB_DATABASE" value=":memory:"/>
+        <env name="CACHE_DRIVER" value="array"/>
+        <env name="SENTINEL_ENABLED" value="true"/>
+        <env name="SENTINEL_QUERY_TIME_THRESHOLD" value="1000"/>
+        <env name="SENTINEL_MEMORY_THRESHOLD" value="128"/>
+        <env name="SENTINEL_RESPONSE_TIME_THRESHOLD" value="2000"/>
+        <env name="SENTINEL_SECURITY_AUTO_BLOCK_SCORE" value="20"/>
+        <env name="SENTINEL_COST_PROVIDER" value="aws"/>
+        <env name="SENTINEL_COST_INSTANCE_TYPE" value="t3.small"/>
+        <env name="SENTINEL_COST_STORAGE_GB" value="100"/>
+        <env name="SENTINEL_COST_BANDWIDTH_GB" value="500"/>
+        <env name="SENTINEL_COST_CDN_HIT_RATE" value="70"/>
+    </php>
 </phpunit>
