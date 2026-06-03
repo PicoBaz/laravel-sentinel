@@ -5,6 +5,7 @@ Advanced monitoring and alerting system for Laravel applications with real-time 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![PHP](https://img.shields.io/badge/php-%5E8.3-blue)
 ![Laravel](https://img.shields.io/badge/laravel-%5E11.0%7C%5E12.0%7C%5E13.0-red)
+[![Total Downloads](https://img.shields.io/packagist/dt/picobaz/laravel-sentinel.svg?style=flat-square)](https://packagist.org/packages/picobaz/laravel-sentinel)
 
 ## ✨ Features
 
